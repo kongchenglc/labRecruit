@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div id="bgd"></div>
-    <header>  
+    <header>
       <div id="goBack" @click='goBack'>
-      <i class="fa fa-chevron-left"></i>
+        <i class="fa fa-chevron-left"></i>
         返回
       </div>
       <h4 id='title'>{{$route.name}}</h4>
@@ -24,18 +24,22 @@ export default {
 </script>
 
 <style>
-html, body, h4 {
+html,
+body {
   margin: 0;
   padding: 0;
 }
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
-  color: white;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .2);
   padding: 20px;
 }
+
 #bgd {
   position: absolute;
   top: 0;
@@ -46,11 +50,14 @@ html, body, h4 {
   background-image: url('./assets/background-img.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  filter: blur(5px);
+  filter: blur(7px);
 }
+
 #title {
   text-align: center;
+  margin: 0;
 }
+
 #goBack {
   position: absolute;
   top: 20px;
@@ -58,4 +65,13 @@ html, body, h4 {
   cursor: pointer;
 }
 
+
+@media screen and (min-width: 600px) {
+  #title {
+    display: none;
+  }
+  #bgd {
+    filter: blur(10px);
+  }
+}
 </style>
