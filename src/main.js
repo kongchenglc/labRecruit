@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './vuex/store'
+import axios from 'axios'
 import 'font-awesome/css/font-awesome.css'
 
 Vue.config.productionTip = false
@@ -11,6 +13,9 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
+
+Vue.prototype.$axios = axios;
