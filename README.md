@@ -1,6 +1,6 @@
 # lab-recruit
 
-> ThoughtCoding recruit
+> ThoughtCoding lab recruit website( vue + vue-reouter + vuex + axios )
 
 ## Build Setup
 
