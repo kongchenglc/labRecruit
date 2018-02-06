@@ -1,7 +1,7 @@
 <template>
-    <div class="input-item">
+    <div class="input-item" @click="formSubmit">
         <slot></slot>
-        <input :type="itemtype" :class="{'itssub':isSub}">
+        <input :type="itemtype" :class="{'itssub':isSub}" :value="itemvalue" :placeholder="itemhold">
     </div>
 </template>
 
@@ -11,10 +11,24 @@ export default {
         return {
         }
     },
-    props: ['itemtype'],
+    props: ['itemtype', 'itemvalue', 'itemhold'],
     computed: {
         isSub() {
             return this.itemtype === 'submit'
+        }
+    },
+    methods: {
+        formSubmit() {
+            this.isSub && this.submitAjax();
+        },
+        submitAjax() {
+            // $store.
+            this.$axios({
+                method: 'get',
+                url: 'http://localhost:8080/#/',
+            }).then((result)=>{
+                console.log(result.headers);
+            })
         }
     }
 }
@@ -24,11 +38,12 @@ export default {
 input {
     background: transparent;
     border: none;
+    padding-left: 5px;
     outline: none;
     color: #fff;
     width: 80%;
     line-height: 35px;
-    font-size: 20px;
+    font-size: 15px;
     vertical-align: baseline;
 }
 
