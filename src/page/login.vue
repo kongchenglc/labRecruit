@@ -2,30 +2,39 @@
     <div id="container">
         <h1 id="subTitle">ThoughtCoding</h1>
 
-        <input-item itemtype="text" itemvalue="" itemhold="请输入学号">
+        <div class="input-item">
             <i class="fa fa-user-o"></i>
-        </input-item>
-        <input-item itemtype="password" itemvalue="" itemhold="请输入密码">
-            <i class="fa fa-key"></i>
-        </input-item>
-        <img @click="reloadcode" id="checkcodeimg" :src="checkcodesrc" alt="1">
-        <div id="checkcode">
-            <input-item  itemvalue="" itemhold="请输入验证码">
-                <i class="fa fa-shield"></i>
-            </input-item>
+            <input type="text" placehold="请输入学号"></input>
         </div>
+
+        <div class="input-item">
+            <i class="fa fa-key"></i>
+            <input type="password" placehold="请输入密码"></input>
+        </div>
+
+        <img @click="reloadcode" id="checkcodeimg" :src="checkcodesrc" alt="1">
+
+        <div class="input-item" id="checkcode">
+            <i class="fa fa-shield"></i>
+            <input placehold="请输入验证码"></input>
+        </div>
+
         <p id="notes">
             <small>
                 *{{thenote}}
             </small>
         </p>
-        <input-item id="thesubm" itemtype="submit" itemvalue="登录" itemhold="">
-        </input-item>
+
+        <div id="thesubm" class="input-item">
+            <input class="itssub" type="submit" value="登录" @click="submitAjax"></input>
+        </div>
+
     </div>
 </template>
 
 <script>
-import inputItem from '@/components/input-item';
+import { mapGetters } from 'vuex'
+
 export default {
     data() {
         return {
@@ -33,16 +42,23 @@ export default {
             thenote: ' 使用教务系统账号密码登录',
         }
     },
-    components: {
-        inputItem,
-    },
     methods: {
         reloadcode() {
             this.checkcodesrc += '?';
         },
-        logInSubmit() {
-            console.log("tijiaole");
+        submitAjax() {
+            // $store.
+            this.$axios({
+                method: 'get',
+                url: 'http://localhost:8080/#/',
+            }).then((result) => {
+                // console.log(result);
+                console.log(this.token);
+            })
         }
+    },
+    computed: {
+        ...mapGetters(['token'])
     }
 }
 </script>
@@ -68,7 +84,7 @@ export default {
 
 #checkcode {
     /* overflow: hidden; */
-    margin-top: -20px;
+    margin-top: 0;
     float: right;
     width: 60%;
 }
@@ -80,11 +96,39 @@ export default {
 
 #thesubm {
     cursor: pointer;
-    border-color: #2CAC62; 
-    background-color: #2CAC62; 
+    border-color: #2CAC62;
+    background-color: #2CAC62;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
     box-shadow: 0 7px 30px 10px rgba(255, 255, 255, .2) inset, 0 1px 4px 0 rgba(0, 0, 0, .2);
 }
+
+input {
+    background: transparent;
+    border: none;
+    padding-left: 5px;
+    outline: none;
+    color: #fff;
+    width: 80%;
+    line-height: 35px;
+    font-size: 15px;
+    vertical-align: baseline;
+}
+
+.input-item {
+    padding-left: 15px;
+    margin: 20px 0;
+    border: 1px solid #fff;
+    border-radius: 500px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .2) inset;
+}
+
+.itssub {
+    margin-left: 8%;
+    cursor: pointer;
+}
+
+
+
 
 
 
