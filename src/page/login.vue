@@ -4,19 +4,19 @@
 
         <div class="input-item">
             <i class="fa fa-user-o"></i>
-            <input type="text" placehold="请输入学号"></input>
+            <input type="text" placehold="请输入学号" v-model="sNumber"></input>
         </div>
 
         <div class="input-item">
             <i class="fa fa-key"></i>
-            <input type="password" placehold="请输入密码"></input>
+            <input type="password" placehold="请输入密码" v-model="sPassword"></input>
         </div>
 
         <img @click="reloadcode" id="checkcodeimg" :src="checkcodesrc" alt="1">
 
         <div class="input-item" id="checkcode">
             <i class="fa fa-shield"></i>
-            <input placehold="请输入验证码"></input>
+            <input placehold="请输入验证码" v-model="checkcode"></input>
         </div>
 
         <p id="notes">
@@ -25,8 +25,8 @@
             </small>
         </p>
 
-        <div id="thesubm" class="input-item">
-            <input class="itssub" type="submit" value="登录" @click="submitAjax"></input>
+        <div id="thesubm" class="input-item" @click="submitAjax">
+            <input class="itssub" type="submit" value="登录"></input>
         </div>
 
     </div>
@@ -40,20 +40,28 @@ export default {
         return {
             checkcodesrc: 'http://222.24.62.120/CheckCode.aspx',
             thenote: ' 使用教务系统账号密码登录',
+            sNumber: '',
+            sPassword: '',
+            checkcode: '',
         }
     },
     methods: {
         reloadcode() {
             this.checkcodesrc += '?';
+                sessionStorage.setItem('token','12136');
         },
         submitAjax() {
             // $store.
             this.$axios({
-                method: 'get',
-                url: 'http://localhost:8080/#/',
+                method: 'post',
+                url: './login',
+                data: {
+                    sNumber: this.sNumber,
+                    sPassword: this.sPassword,
+                    checkcode: this.checkcode,
+                }
             }).then((result) => {
-                // console.log(result);
-                console.log(this.token);
+                console.log(result);
             })
         }
     },
@@ -86,7 +94,7 @@ export default {
     /* overflow: hidden; */
     margin-top: 0;
     float: right;
-    width: 60%;
+    width: 50%;
 }
 
 #notes {
