@@ -7,7 +7,9 @@
         返回
       </div>
       <h4 id='title'>{{$route.name}}</h4>
-      <router-link id="adminlink" to="/signin"><i class="fa fa-user"></i></router-link>
+      <router-link id="adminlink" to="/signin">
+        <i class="fa fa-user"></i>
+      </router-link>
     </header>
     <router-view/>
   </div>
