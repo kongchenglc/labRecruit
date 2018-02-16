@@ -8,7 +8,6 @@ export default new Vuex.Store({
         // token:
     },
     mutations: {
-
     },
     getters: {
         token() {
