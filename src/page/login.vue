@@ -12,7 +12,7 @@
             <input type="password" placehold="请输入密码" v-model="sPassword"></input>
         </div>
 
-        <img @click="reloadcode" id="checkcodeimg" :src="checkcodesrc" alt="1">
+        <img @click="reloadcode" id="checkcodeimg" :src="checkcodesrc" alt="验证码">
 
         <div class="input-item" id="checkcode">
             <i class="fa fa-shield"></i>
@@ -38,7 +38,7 @@ import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
-            checkcodesrc: 'http://222.24.62.120/CheckCode.aspx',
+            checkcodesrc: 'http://localhost:3000/CheckCode.aspx',
             thenote: ' 使用教务系统账号密码登录',
             sNumber: '',
             sPassword: '',
