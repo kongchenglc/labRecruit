@@ -1,5 +1,6 @@
 const Koa = require('koa')
 const fs = require('fs')
+const http = require('http')
 const path = require('path')
 const static = require('koa-static')
 const Router = require('koa-router')
@@ -9,41 +10,51 @@ const app = new Koa()
 const router = new Router()
 let theCookie = []
 
-//渲染函数，硬编码返回index
-function render() {
-    return new Promise((resolve, reject)=>{
-        fs.readFile('./index.html', 'binary', (err, data)=>{
-            if(err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
+
+//当有页面请求，判断如果是验证码，转发图片和cookie
+router.get('/CheckCode.aspx', async (ctx, next) => {
+    //验证码请求配置文件
+    const option = {
+        hostname: '222.24.62.120',
+        path: '/CheckCode.aspx',
+        headers: {
+            'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+            'Accept-Encoding': 'Unicode',  //这里设置返回的编码方式 设置其他的会是乱码
+            'Accept-Language': 'zh-CN,zh;q=0.8',
+            'Connection': 'keep-alive',
+            'Host': '222.24.62.120',
+        }
+    };
+    //请求验证码函数
+    await new Promise((resolve, reject)=>{
+        http.get(option, res=>{
+            //配置客户端相应头
+                //cookie的解析处理
+                if (res.headers['set-cookie']) {
+                    theCookie = res.headers['set-cookie'][0].split(';')[0].split('=');
+                    theCookie.push({
+                        path: '/',
+                        httpOnly: false,
+                    });
+                    ctx.cookies.set(...theCookie);
+                }
+            ctx.res.writeHead(200, {
+                'Content-Type': 'image/png;',
+                'Accept-Ranges': 'bytes',
+                'Transfer-Encoding': 'identity'
+            });
+            //\配置客户端相应头
+            
+            res.on('data', chunk=>{
+                ctx.res.write(chunk, 'binary');
+            })
+            res.on('end',()=>{
+                ctx.res.end()
+            })
         })
     })
-}
-
-//当有页面请求，从官网获取一个cookie，设置到页面响应头
-router.get('/index.html', async(ctx, next) => {
-    await axios({
-        methods:'get',
-        url:'http://222.24.62.120/'
-    }).then(data=>{
-        //cookie的解析处理
-        theCookie = data.headers['set-cookie'][0].split(';')[0].split('=');
-        theCookie.push({ 
-            // domain: '222.24.62.120',
-            path: '/',
-            httpOnly: false,
-        });
-        console.log(theCookie);
-    }).catch(err=>{
-        console.log(err);
-    })
-    ctx.cookies.set(...theCookie);
-    ctx.body = await render();
     await next();
 })
-
 
 //使用中间件，开启服务
 app .use(router.routes())
