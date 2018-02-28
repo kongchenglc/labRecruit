@@ -11,6 +11,28 @@ const router = new Router()
 let theCookie = []
 
 
+//处理post请求
+app.use(async (ctx,next)=>{
+    //学生登录
+    if (ctx.url === '/login' && ctx.method === 'POST') {
+        let chunks = ''
+        console.log('postttttt');
+        ctx.req.on('data', chunk=>{
+            chunks += chunk;
+        })
+        ctx.req.on('end', ()=>{
+            let data = JSON.parse(chunks)
+            console.log(data.sNumber);
+        })
+    } else {
+        console.log('other: ' + ctx.url + ' + ' + ctx.method);  
+    }
+    await next();
+})
+
+
+
+
 //当有页面请求，判断如果是验证码，转发图片和cookie
 router.get('/CheckCode.aspx', async (ctx, next) => {
     //验证码请求配置文件
@@ -44,7 +66,7 @@ router.get('/CheckCode.aspx', async (ctx, next) => {
                 'Transfer-Encoding': 'identity'
             });
             //\配置客户端相应头
-            
+
             res.on('data', chunk=>{
                 ctx.res.write(chunk, 'binary');
             })
@@ -55,6 +77,11 @@ router.get('/CheckCode.aspx', async (ctx, next) => {
     })
     await next();
 })
+
+
+
+
+
 
 //使用中间件，开启服务
 app .use(router.routes())
