@@ -8,33 +8,38 @@ const axios = require('axios')
 
 const app = new Koa()
 const router = new Router()
-let theCookie = []
+let theCookie = ''
 
 
-//处理post请求
-app.use(async (ctx,next)=>{
-    //学生登录
-    if (ctx.url === '/login' && ctx.method === 'POST') {
+function getJsonFromClient(ctx) {
+    return new Promise((resolve, reject)=>{
         let chunks = ''
-        console.log('postttttt');
-        ctx.req.on('data', chunk=>{
+        ctx.req.on('data', chunk => {
             chunks += chunk;
         })
-        ctx.req.on('end', ()=>{
+        ctx.req.on('end', () => {
             let data = JSON.parse(chunks)
-            console.log(data.sNumber);
+            resolve(data);
+            console.log(data);
         })
-    } else {
-        console.log('other: ' + ctx.url + ' + ' + ctx.method);  
-    }
-    await next();
-})
+    });
+}
+
+async function sendToWebsite(ctx, data) {
+    let post_data = `__VIEWSTATE=dDwxNTMxMDk5Mzc0Ozs%2BlYSKnsl%2FmKGQ7CKkWFJpv0btUa8%3D&txtUserName=${data.sNumber}&Textbox1=${data.sNumber}&TextBox2=${data.sPassword}&txtSecretCode=${data.checkcode}&RadioButtonList1=%D1%A7%C9%FA&Button1=&lbLanguage=&hidPdrs=&hidsc=`;//这是需要提交的数据    
+    
+}
+
+async function loginCheck(ctx) {
+    //得到JSON数据
+    let data = await getJsonFromClient(ctx)
+    //提交JSON数据
+    await sendToWebsite(ctx, data);
+    console.log(theCookie);
+}
 
 
-
-
-//当有页面请求，判断如果是验证码，转发图片和cookie
-router.get('/CheckCode.aspx', async (ctx, next) => {
+async function loginGetCheckcode(ctx) {
     //验证码请求配置文件
     const option = {
         hostname: '222.24.62.120',
@@ -48,18 +53,19 @@ router.get('/CheckCode.aspx', async (ctx, next) => {
         }
     };
     //请求验证码函数
-    await new Promise((resolve, reject)=>{
-        http.get(option, res=>{
+    await new Promise((resolve, reject) => {
+        http.get(option, res => {
             //配置客户端相应头
-                //cookie的解析处理
-                if (res.headers['set-cookie']) {
-                    theCookie = res.headers['set-cookie'][0].split(';')[0].split('=');
-                    theCookie.push({
-                        path: '/',
-                        httpOnly: false,
-                    });
-                    ctx.cookies.set(...theCookie);
-                }
+            //cookie的解析处理
+            if (res.headers['set-cookie']) {
+                let cookie = res.headers['set-cookie'][0].split(';')[0].split('=');
+                theCookie = cookie[1];
+                cookie.push({
+                    path: '/',
+                    httpOnly: false,
+                });
+                ctx.cookies.set(...cookie);
+            }
             ctx.res.writeHead(200, {
                 'Content-Type': 'image/png;',
                 'Accept-Ranges': 'bytes',
@@ -67,20 +73,39 @@ router.get('/CheckCode.aspx', async (ctx, next) => {
             });
             //\配置客户端相应头
 
-            res.on('data', chunk=>{
+            //转发图片
+            res.on('data', chunk => {
                 ctx.res.write(chunk, 'binary');
             })
-            res.on('end',()=>{
+            res.on('end', () => {
                 ctx.res.end()
+                resolve();
             })
         })
     })
+}
+
+
+
+//转发验证码和cookie
+router.get('/CheckCode.aspx', async (ctx, next) => {
+    await loginGetCheckcode(ctx);
     await next();
 })
 
 
-
-
+//处理post请求
+app.use(async (ctx,next)=>{
+    if (ctx.url === '/login' && ctx.method === 'POST') {
+        //学生登录
+        await loginCheck(ctx);
+    } else if (ctx.url === '/signin' && ctx.method === 'POST') {
+        //管理员登录
+    } else {
+        // console.log('other: ' + ctx.url + ' + ' + ctx.method);  
+    }
+    await next();
+})
 
 
 //使用中间件，开启服务
