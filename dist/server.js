@@ -25,17 +25,69 @@ function getJsonFromClient(ctx) {
     });
 }
 
-async function sendToWebsite(ctx, data) {
+async function sendToWebsite(data) {
     let post_data = `__VIEWSTATE=dDwxNTMxMDk5Mzc0Ozs%2BlYSKnsl%2FmKGQ7CKkWFJpv0btUa8%3D&txtUserName=${data.sNumber}&Textbox1=${data.sNumber}&TextBox2=${data.sPassword}&txtSecretCode=${data.checkcode}&RadioButtonList1=%D1%A7%C9%FA&Button1=&lbLanguage=&hidPdrs=&hidsc=`;//这是需要提交的数据    
-    
+    let options = {
+        hostname: '222.24.62.120',
+        path: '/default2.aspx',
+        method: 'POST',
+        headers: {
+            'Host': '222.24.62.120',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'max-age=0',
+            'Origin': 'http://222.24.62.120',
+            'Upgrade-Insecure-Requests': '1',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Cookie': `ASP.NET_SessionId=${theCookie}`
+        }
+    };
+    return new Promise((resolve, reject)=>{
+        let chunks;
+        let req = http.request(options, function (res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                chunks += chunk;
+            });
+            res.on('end',()=>{
+                if (chunks.indexOf(`xs_main.aspx?xh=${data.sNumber}`) && res.statusCode === 302) {
+                    resolve('登录成功');
+                } else {
+                    resolve('登录失败');
+                    console.log('shibai')
+                }
+            })
+        });
+        req.on('error', function (e) {
+            console.log('problem with request: ' + e.message);
+        });
+        req.write(post_data);
+        req.end(); 
+    })
+}
+
+async function sendBacktoClient(ctx, status) {
+    console.log(status);
+    if (status ==='登录成功') {
+        ctx.res.writeHead(200, {
+            'Accept-Ranges': 'bytes',
+            'Transfer-Encoding': 'identity'
+        });
+        ctx.res.write('ojbk');
+        ctx.res.end();
+    }
 }
 
 async function loginCheck(ctx) {
     //得到JSON数据
     let data = await getJsonFromClient(ctx)
     //提交JSON数据
-    await sendToWebsite(ctx, data);
-    console.log(theCookie);
+    let status = await sendToWebsite(data);
+    //返回给客户端
+    await sendBacktoClient(ctx, status);
 }
 
 
