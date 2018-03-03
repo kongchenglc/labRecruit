@@ -57,7 +57,6 @@ async function sendToWebsite(data) {
                     resolve('登录成功');
                 } else {
                     resolve('登录失败');
-                    console.log('shibai')
                 }
             })
         });
@@ -77,6 +76,13 @@ async function sendBacktoClient(ctx, status) {
             'Transfer-Encoding': 'identity'
         });
         ctx.res.write('ojbk');
+        ctx.res.end();
+    } else {
+        ctx.res.writeHead(200, {
+            'Accept-Ranges': 'bytes',
+            'Transfer-Encoding': 'identity'
+        });
+        ctx.res.write('err');
         ctx.res.end();
     }
 }
