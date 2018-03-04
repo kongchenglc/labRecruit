@@ -7,9 +7,6 @@
         返回
       </div>
       <h4 id='title'>{{$route.name}}</h4>
-      <router-link id="adminlink" to="/signin">
-        <i class="fa fa-user"></i>
-      </router-link>
     </header>
     <router-view/>
   </div>
@@ -66,14 +63,6 @@ body {
   top: 20px;
   left: 20px;
   cursor: pointer;
-}
-
-#adminlink {
-  text-decoration: none;
-  position: absolute;
-  top: 20px;
-  right: 25px;
-  color: #eee;
 }
 
 
