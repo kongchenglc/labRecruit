@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/page/login'
 import error from '@/page/error'
+import signup from '@/page/signup'
+import admin_login from '@/page/admin_login'
 
 Vue.use(Router)
 
@@ -11,6 +13,16 @@ export default new Router({
       path: '/login',
       name: 'Log In',
       component: login,
+    },
+    {
+      path: '/signup',
+      name: 'Sign Up',
+      component: signup,
+    },
+    {
+      path: '/admin_login',
+      name: 'Admin Login',
+      component: admin_login,
     },
     {
       path: '*',
