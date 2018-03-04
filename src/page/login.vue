@@ -1,22 +1,30 @@
 <template>
     <div id="container">
+        
+    <router-link id="adminlink" to="/admin_login">
+        <i class="fa fa-user"></i>
+    </router-link>
+
         <h1 id="subTitle">ThoughtCoding</h1>
 
         <div class="input-item">
             <i class="fa fa-user-o"></i>
-            <input type="text" placehold="请输入学号" v-model="sNumber"></input>
+            <input type="text" required placeholder="请输入学号" v-model="sNumber"></input>
         </div>
 
         <div class="input-item">
             <i class="fa fa-key"></i>
-            <input type="password" placehold="请输入密码" v-model="sPassword"></input>
+            <input type="password" required placeholder="请输入密码" v-model="sPassword"></input>
         </div>
 
-        <img @click="reloadcode" id="checkcodeimg" :src="checkcodesrc" alt="验证码">
+        <div id='lodingBox'>
+            <i id="loding" class="fa fa-spinner fa-spin"></i>
+        </div> 
+        <img v-if="!checkcodeLoding" @click="reloadcode" id="checkcodeimg" :src="checkcodesrc" alt="验证码">
 
         <div class="input-item" id="checkcode">
             <i class="fa fa-shield"></i>
-            <input placehold="请输入验证码" v-model="checkcode"></input>
+            <input placeholder="请输入验证码" required v-model="checkcode"></input>
         </div>
 
         <p id="notes">
@@ -43,35 +51,65 @@ export default {
             sNumber: '',
             sPassword: '',
             checkcode: '',
+            checkcodeLoding: false,
         }
     },
     methods: {
         reloadcode() {
-            this.checkcodesrc += '?';
-                sessionStorage.setItem('token','12136');
+            let newImg = new Image();
+            newImg.src = this.checkcodesrc + '?';
+            this.checkcodeLoding = true;
+            newImg.onload = ()=>{
+                this.checkcodeLoding = false;
+                this.checkcodesrc = newImg.src;
+            }
+                // sessionStorage.setItem('token','12136');
         },
         submitAjax() {
-            // $store.
-            this.$axios({
-                method: 'post',
-                url: './login',
-                data: {
-                    sNumber: this.sNumber,
-                    sPassword: this.sPassword,
-                    checkcode: this.checkcode,
-                }
-            }).then((result) => {
-                console.log(result);
-            })
+            if(this.sNumber && this.sPassword && this.checkcode) {
+                // $store.
+                this.$axios({
+                    method: 'post',
+                    url: 'http://localhost:3000/login',
+                    data: {
+                        sNumber: this.sNumber,
+                        sPassword: this.sPassword,
+                        checkcode: this.checkcode,
+                    }
+                }).then((result) => {
+                    console.log(result);
+                    if(result.data === 'ojbk') {
+                        console.log('chenggonglea')
+                        this.$router.push('/signup');
+                    } else {
+                        this.reloadcode();
+                        this.sNumber = '';
+                        this.sPassword = '';
+                        this.checkcode = '';
+                        this.thenote = ' 输入错误，请重新登录'
+                    }
+                })
+                this.thenote = ' '
+            } else {
+                this.thenote = ' 请输入完整信息'
+            }
         }
     },
     computed: {
         ...mapGetters(['token'])
-    }
+    },
 }
 </script>
 
 <style scoped>
+#adminlink {
+    text-decoration: none;
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    color: #eee;
+}
+
 #subTitle {
     text-align: center;
     margin: 60px 0 50px 0;
@@ -88,6 +126,15 @@ export default {
     width: 30%;
     margin: 0;
     margin-left: 5%;
+}
+#lodingBox {
+    position: relative;
+}
+#loding {
+    z-index: -1;
+    position: absolute;
+    left: 20%;
+    margin-top: 3%;
 }
 
 #checkcode {
@@ -122,6 +169,10 @@ input {
     vertical-align: baseline;
 }
 
+input::placeholder {
+    color: rgba(255, 255, 255, .8);
+}
+
 .input-item {
     padding-left: 15px;
     margin: 20px 0;
@@ -134,10 +185,6 @@ input {
     margin-left: 8%;
     cursor: pointer;
 }
-
-
-
-
 
 
 
