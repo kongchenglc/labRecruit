@@ -73,11 +73,6 @@ input {
     font-size: 15px;
     vertical-align: baseline;
 }
-
-input::placeholder {
-    color: rgba(255, 255, 255, .8);
-}
-
 .input-item {
     padding-left: 15px;
     margin: 20px 0;
@@ -85,6 +80,10 @@ input::placeholder {
     border-radius: 500px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .2) inset;
 }
+input::placeholder {
+    color: rgba(220, 220, 220, .8);
+}
+
 
 .itssub {
     margin-left: 8%;
