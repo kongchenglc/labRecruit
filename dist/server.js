@@ -5,9 +5,11 @@ const path = require('path')
 const static = require('koa-static')
 const Router = require('koa-router')
 const axios = require('axios')
+const monk = require('monk')
 
 const app = new Koa()
 const router = new Router()
+const databaseUrl = 'localhost:27017/labRecruit'
 let theCookie = ''
 
 
