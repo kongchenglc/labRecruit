@@ -168,11 +168,9 @@ input {
     font-size: 15px;
     vertical-align: baseline;
 }
-
 input::placeholder {
-    color: rgba(255, 255, 255, .8);
+    color: rgba(220, 220, 220, .8);
 }
-
 .input-item {
     padding-left: 15px;
     margin: 20px 0;
