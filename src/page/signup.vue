@@ -4,28 +4,32 @@
 
          <div class="input-item">
             &nbsp;<i class="fa fa-user"></i>
-            <input type="text" required placeholder="请输入姓名" v-model="sNumber"></input>
+            <input type="text" required placeholder="请输入姓名" v-model="sName"></input>
         </div>
 
         <div class="input-item">
             <i class="fa fa-group"></i>
-            <input type="text" required placeholder="请输入班级" v-model="sNumber"></input>
+            <input type="text" required placeholder="请输入班级" v-model="sClass"></input>
         </div>
 
 
         <div class="input-item">
             &nbsp;<i class="fa fa-phone"></i>
-            <input type="tel" required placeholder="请输入电话号码" v-model="sNumber"></input>
+            <input type="tel" required placeholder="请输入电话号码" v-model="sPhone"></input>
         </div>
 
         
-        <div class="input-item" id="select-subjects">
+        <div class="input-item" id="select-subjects" @click="displaySubjects">
             <i class="fa fa-laptop"></i>
-            <span class="placeholder">{{"请选择方向"}}</span>
-            <ul id="subjects"  v-show="selecting" >
-                 <li class="subject" v-for='(item, index) of subjects' :key="index">{{item}}</li> 
+            <span class="placeholder" :class="selected?'':'placeholder2'">{{sSubject}}</span>
+            <ul id="subjects"  v-show="selecting">
+                 <li class="subject" @click="select(index)" v-for='(item, index) of subjects' :key="index">{{item}}</li> 
             </ul>
-            <i id="the-arrow" class="fa fa-chevron-down" @click="displaySubject"></i>
+            <i id="the-arrow" class="fa fa-chevron-down"></i>
+        </div>
+
+        <div id="thesubm" class="input-item"  @click="submitAjax">
+            <input :class="selecting?'sub-blur':'itssub'" class="itssub" type="submit" value="提交"></input>
         </div>
 
     </div>
@@ -36,12 +40,42 @@ export default {
     data() {
         return {
             selecting: false,
-            subjects: ['前端','后台','安卓','嵌入式']
+            selected: false,
+            subjects: {
+                0: '前端',
+                1: '后台',
+                2: '安卓',
+                3: '嵌入式'
+            },
+            sName: '',
+            sClass: '',
+            sPhone: '',
+            sSubject: '请选择方向',
         }
     },
     methods: {
-        displaySubject() {
+        displaySubjects() {
             this.selecting = !this.selecting;
+        },
+        submitAjax() {
+            if(this.sName && this.sClass && this.sPhone && this.selected) {
+                this.$axios({
+                    method: 'post',
+                    url: 'http://localhost:3000/signup',
+                    data: {
+                        sName: this.sName,
+                        sClass: this.sClass,
+                        sPhone: this.sPhone,
+                        sSubject: this.sSubject,
+                    }
+                }).then(data => {
+                    console.log(data);
+                })
+            }
+        },
+        select(index) {
+            this.sSubject = this.subjects[index];
+            this.selected = true;
         }
     }
 }
@@ -73,11 +107,13 @@ input::placeholder {
     color: rgba(220, 220, 220, .8);
 }
 .placeholder {
-    color: rgba(220, 220, 220, .8);
     text-shadow: none;
     padding-left: 5px;
     line-height: 35px;
     width: 80%;
+}
+.placeholder2 {
+    color: rgba(220, 220, 220, .8);
 }
 .input-item {
     padding-left: 15px;
@@ -93,6 +129,7 @@ input::placeholder {
     user-select: none;    
 }
 #subjects {
+    z-index: 1;    
     position: absolute;
     margin: 0;
     padding: 0; 
@@ -101,13 +138,14 @@ input::placeholder {
     width: 80%;
     border: 1px solid white;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
-    background-color: rgba(255, 255, 255, .1);
+    background-color: rgba(100, 100, 100, .15);
     border-radius: 0 0 10px 10px;
 }
 .subject {
     cursor: pointer;
     padding: 5px;
     color: white;
+    border-bottom: 1px solid rgba(100, 100, 100, .2); 
 }
 .subject:hover {
     background-color: rgba(0, 0, 0, .1);
@@ -122,6 +160,26 @@ li {
     top: 10px;
     cursor: pointer;
 }
+
+
+
+#thesubm {
+    margin-top: 40px;
+    cursor: pointer;
+    border-color: #2CAC62;
+    background-color: #2CAC62;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+    box-shadow: 0 7px 30px 10px rgba(255, 255, 255, .2) inset, 0 1px 4px 0 rgba(0, 0, 0, .2);
+}
+.itssub {
+    margin-left: 8%;
+    cursor: pointer;
+}
+.sub-blur {
+    filter: blur(2px);    
+}
+
+
 
 @media screen and (min-width: 600px) {
     #container {
