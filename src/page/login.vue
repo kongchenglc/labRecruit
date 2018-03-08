@@ -59,7 +59,7 @@ export default {
             let newImg = new Image();
             newImg.src = this.checkcodesrc + '?';
             this.checkcodeLoding = true;
-            newImg.onload = ()=>{
+            newImg.onload = () => {
                 this.checkcodeLoding = false;
                 this.checkcodesrc = newImg.src;
             }
@@ -77,17 +77,18 @@ export default {
                         checkcode: this.checkcode,
                     }
                 }).then((result) => {
-                    console.log(result);
-                    if(result.data === 'ojbk') {
-                        console.log('chenggonglea')
+                    console.log(result.data);
+                    if(result.data === 'unregistered') {
                         this.$router.push('/signup');
+                    } else if(result.data.sNumber === this.sNumber) {
+                        console.log('已注册 显示信息')
                     } else {
                         this.reloadcode();
                         this.sNumber = '';
                         this.sPassword = '';
                         this.checkcode = '';
                         this.thenote = ' 输入错误，请重新登录'
-                    }
+                    } 
                 })
                 this.thenote = ' '
             } else {
