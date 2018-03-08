@@ -7,9 +7,10 @@ const Router = require('koa-router')
 const axios = require('axios')
 const monk = require('monk')
 
+const databaseUrl = 'localhost:27017/labRecruit'
 const app = new Koa()
 const router = new Router()
-const databaseUrl = 'localhost:27017/labRecruit'
+const db = monk(databaseUrl);
 let theCookie = ''
 
 
@@ -25,6 +26,18 @@ function getJsonFromClient(ctx) {
             console.log(data);
         })
     });
+}
+
+async function checkDBSigned(sNumber) {
+    return db.get('student').find({ sNumber },{ _id: 0 }).then(data => {
+        console.log(data);
+        if(data.length) {
+            return JSON.stringify(data[0]);
+        } else {
+            return "unregistered";
+        }
+        db.close();
+    })
 }
 
 async function sendToWebsite(data) {
@@ -54,11 +67,13 @@ async function sendToWebsite(data) {
             res.on('data', function (chunk) {
                 chunks += chunk;
             });
-            res.on('end',()=>{
+            res.on('end',async ()=>{
                 if (chunks.indexOf(`xs_main.aspx?xh=${data.sNumber}`) && res.statusCode === 302) {
-                    resolve('登录成功');
+                    //数据库验证此账号是否注册
+                    let status = await checkDBSigned(data.sNumber);
+                    resolve(status);
                 } else {
-                    resolve('登录失败');
+                    resolve('loginFailed');
                 }
             })
         });
@@ -72,21 +87,12 @@ async function sendToWebsite(data) {
 
 async function sendBacktoClient(ctx, status) {
     console.log(status);
-    if (status ==='登录成功') {
-        ctx.res.writeHead(200, {
-            'Accept-Ranges': 'bytes',
-            'Transfer-Encoding': 'identity'
-        });
-        ctx.res.write('ojbk');
-        ctx.res.end();
-    } else {
-        ctx.res.writeHead(200, {
-            'Accept-Ranges': 'bytes',
-            'Transfer-Encoding': 'identity'
-        });
-        ctx.res.write('err');
-        ctx.res.end();
-    }
+    ctx.res.writeHead(200, {
+        'Accept-Ranges': 'bytes',
+        'Transfer-Encoding': 'identity'
+    });
+    ctx.res.write(status);
+    ctx.res.end();
 }
 
 async function loginCheck(ctx) {
@@ -97,7 +103,6 @@ async function loginCheck(ctx) {
     //返回给客户端
     await sendBacktoClient(ctx, status);
 }
-
 
 async function loginGetCheckcode(ctx) {
     //验证码请求配置文件
@@ -145,6 +150,9 @@ async function loginGetCheckcode(ctx) {
     })
 }
 
+async function signIn(ctx) {
+
+}
 
 
 //转发验证码和cookie
@@ -159,7 +167,10 @@ app.use(async (ctx,next)=>{
     if (ctx.url === '/login' && ctx.method === 'POST') {
         //学生登录
         await loginCheck(ctx);
-    } else if (ctx.url === '/signin' && ctx.method === 'POST') {
+    } else if (ctx.url === '/signup' && ctx.method === 'POST') {
+        //学生信息
+        await signIn(ctx);
+    } else if (ctx.url === '/admin_login' && ctx.method === 'POST') {
         //管理员登录
     } else {
         // console.log('other: ' + ctx.url + ' + ' + ctx.method);  
