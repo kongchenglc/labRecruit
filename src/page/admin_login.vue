@@ -5,12 +5,12 @@
 
         <div class="input-item">
             <i class="fa fa-user-o"></i>
-            <input type="text" required placeholder="请输入管理员账号" v-model="aNumber"></input>
+            <input type="text" placeholder="请输入管理员账号" v-model="aNumber"></input>
         </div>
 
         <div class="input-item">
             <i class="fa fa-key"></i>
-            <input type="password" required placeholder="请输入密码" v-model="aPassword"></input>
+            <input type="password" placeholder="请输入密码" v-model="aPassword" @keyup.enter="submit"></input>
         </div>
 
         <div id="thesubm" class="input-item" @click="submit">
