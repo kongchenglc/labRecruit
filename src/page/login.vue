@@ -24,7 +24,7 @@
 
         <div class="input-item" id="checkcode">
             <i class="fa fa-shield"></i>
-            <input placeholder="请输入验证码" required v-model="checkcode"></input>
+            <input placeholder="请输入验证码" required v-model="checkcode" @keyup.enter="submitAjax"></input>
         </div>
 
         <p id="notes">
@@ -81,6 +81,7 @@ export default {
                     if(result.data === 'unregistered') {
                         this.$router.push('/signup');
                     } else if(result.data.sNumber === this.sNumber) {
+                        this.$router.push('/message');
                         console.log('已注册 显示信息')
                     } else {
                         this.reloadcode();
@@ -90,7 +91,7 @@ export default {
                         this.thenote = ' 输入错误，请重新登录'
                     } 
                 })
-                this.thenote = ' '
+                this.thenote = ' 正在登录，请稍后...'
             } else {
                 this.thenote = ' 请输入完整信息'
             }
