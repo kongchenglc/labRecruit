@@ -13,7 +13,6 @@ const router = new Router()
 const db = monk(databaseUrl);
 let theCookie = ''
 
-
 function getJsonFromClient(ctx) {
     return new Promise((resolve, reject)=>{
         let chunks = ''
@@ -29,6 +28,7 @@ function getJsonFromClient(ctx) {
 }
 
 async function checkDBSigned(sNumber) {
+    console.log('db checking...');
     return db.get('student').find({ sNumber },{ _id: 0 }).then(data => {
         console.log(data);
         if(data.length) {
@@ -87,12 +87,13 @@ async function sendToWebsite(data) {
 
 async function sendBacktoClient(ctx, status) {
     console.log(status);
-    ctx.res.writeHead(200, {
+    await ctx.res.writeHead(200, {
         'Accept-Ranges': 'bytes',
         'Transfer-Encoding': 'identity'
     });
-    ctx.res.write(status);
-    ctx.res.end();
+    await ctx.res.write(status);
+    await ctx.res.end();
+
 }
 
 async function loginCheck(ctx) {
@@ -151,7 +152,8 @@ async function loginGetCheckcode(ctx) {
 }
 
 async function signIn(ctx) {
-
+    let data = getJsonFromClient(ctx);
+    console.log(data);
 }
 
 
@@ -161,6 +163,12 @@ router.get('/CheckCode.aspx', async (ctx, next) => {
     await next();
 })
 
+
+//使用中间件，开启服务
+app .use(router.routes())
+    .use(router.allowedMethods())
+    .use(static(__dirname))
+    
 
 //处理post请求
 app.use(async (ctx,next)=>{
@@ -176,13 +184,6 @@ app.use(async (ctx,next)=>{
         // console.log('other: ' + ctx.url + ' + ' + ctx.method);  
     }
     await next();
+}).listen(3000, () => {
+    console.log('[demo] static-use-middleware is starting at port 3000')
 })
-
-
-//使用中间件，开启服务
-app .use(router.routes())
-    .use(router.allowedMethods())
-    .use(static(__dirname))
-    .listen(3000, () => {
-        console.log('[demo] static-use-middleware is starting at port 3000')
-    })
