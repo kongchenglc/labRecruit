@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import login from '@/page/login'
 import error from '@/page/error'
 import signup from '@/page/signup'
+import message from '@/page/message'
 import admin_login from '@/page/admin_login'
 
 Vue.use(Router)
@@ -18,6 +19,11 @@ export default new Router({
       path: '/signup',
       name: 'Sign Up',
       component: signup,
+    },
+    {
+      path: '/message',
+      name: 'Message',
+      component: message,
     },
     {
       path: '/admin_login',
