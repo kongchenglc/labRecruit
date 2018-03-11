@@ -47,10 +47,12 @@ body {
   z-index: -1;
   width: 100vw;
   height: 100vh;
-  background-image: url('./assets/background-img.jpg');
+  background-color: #2E2E2F;
+  background-image: url('./assets/background-img.gif');
   background-repeat: no-repeat;
   background-size: cover;
-  filter: blur(7px);
+  background-position-x: -150px;
+  filter: blur(7px); 
 }
 
 #title {
@@ -71,7 +73,8 @@ body {
     display: none;
   }
   #bgd {
-    filter: blur(10px);
+    filter: blur(10px); 
+    background-position-x: 0;
   }
 }
 </style>
