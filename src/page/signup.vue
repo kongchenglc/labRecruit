@@ -12,7 +12,6 @@
             <input type="text" required placeholder="请输入班级" v-model="sClass"></input>
         </div>
 
-
         <div class="input-item">
             &nbsp;<i class="fa fa-phone"></i>
             <input type="tel" required placeholder="请输入电话号码" v-model="sPhone"></input>
@@ -21,7 +20,7 @@
         
         <div class="input-item" id="select-subjects" @click="displaySubjects">
             <i class="fa fa-laptop"></i>
-            <span class="placeholder" :class="selected?'':'placeholder2'">{{sSubject}}</span>
+            <input class="placeholder" :class="selected?'':'placeholder2'" readonly :value="sSubject" @keyup.enter="submitAjax"></input>
             <ul id="subjects"  v-show="selecting">
                  <li class="subject" @click="select(index)" v-for='(item, index) of subjects' :key="index">{{item}}</li> 
             </ul>
