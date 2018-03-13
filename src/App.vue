@@ -7,8 +7,15 @@
         返回
       </div>
       <h4 id='title'>{{$route.name}}</h4>
+      
+      <router-link to="/admin_login">
+        <i v-show="$route.name==='Log In'" id="adminlink" class="fa fa-user"></i>
+      </router-link>
+
     </header>
-    <router-view/>
+    <transition name='slide-fade' mode="out-in">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -66,6 +73,34 @@ body {
   left: 20px;
   cursor: pointer;
 }
+
+#adminlink {
+  text-decoration: none;
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  color: #eee;
+}
+
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all .2s linear;
+}
+
+.slide-fade-enter{
+  transform: translateX(200px);
+  opacity: 0;  
+}
+.slide-fade-leave-to
+{
+  transform: translateX(-200px);
+  opacity: 0;
+}
+
 
 
 @media screen and (min-width: 600px) {
