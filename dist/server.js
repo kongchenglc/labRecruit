@@ -153,25 +153,20 @@ async function loginGetCheckcode(ctx) {
 
 async function signIn(ctx) {
     let data = getJsonFromClient(ctx);
-    console.log(data);
+    
 }
 
 
 //转发验证码和cookie
 router.get('/CheckCode.aspx', async (ctx, next) => {
-    await loginGetCheckcode(ctx);
     await next();
+    await loginGetCheckcode(ctx);
 })
 
 
-//使用中间件，开启服务
-app .use(router.routes())
-    .use(router.allowedMethods())
-    .use(static(__dirname))
-    
-
 //处理post请求
-app.use(async (ctx,next)=>{
+app.use(async (ctx, next) => {
+    await next();
     if (ctx.url === '/login' && ctx.method === 'POST') {
         //学生登录
         await loginCheck(ctx);
@@ -183,7 +178,12 @@ app.use(async (ctx,next)=>{
     } else {
         // console.log('other: ' + ctx.url + ' + ' + ctx.method);  
     }
-    await next();
-}).listen(3000, () => {
+})
+
+//使用中间件，开启服务
+app .use(router.routes())
+    .use(router.allowedMethods())
+    .use(static(__dirname))
+    .listen(3000, () => {
     console.log('[demo] static-use-middleware is starting at port 3000')
 })
