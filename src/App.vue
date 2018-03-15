@@ -1,21 +1,24 @@
 <template>
   <div id="app">
     <div id="bgd"></div>
+
     <header>
       <div id="goBack" @click='goBack'>
         <i class="fa fa-chevron-left"></i>
         返回
       </div>
+
       <h4 id='title'>{{$route.name}}</h4>
       
       <router-link to="/admin_login">
         <i v-show="$route.name==='Log In'" id="adminlink" class="fa fa-user"></i>
       </router-link>
-
     </header>
+
     <transition name='slide-fade' mode="out-in">
       <router-view/>
     </transition>
+
   </div>
 </template>
 
