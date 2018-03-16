@@ -1,20 +1,16 @@
 <template>
     <div id="container">
-        
-    <router-link id="adminlink" to="/admin_login">
-        <i class="fa fa-user"></i>
-    </router-link>
 
         <h1 id="subTitle">ThoughtCoding</h1>
 
         <div class="input-item">
             <i class="fa fa-user-o"></i>
-            <input type="text" required placeholder="请输入学号" v-model="sNumber"></input>
+            <input type="text" required placeholder="请输入学号" v-model="sNumber"  @keyup.enter="submitAjax"></input>
         </div>
 
         <div class="input-item">
             <i class="fa fa-key"></i>
-            <input type="password" required placeholder="请输入密码" v-model="sPassword"></input>
+            <input type="password" required placeholder="请输入密码" v-model="sPassword"  @keyup.enter="submitAjax"></input>
         </div>
 
         <div id='lodingBox'>
@@ -41,7 +37,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import {mapState, mapMutations, mapGetters, mapActions } from 'vuex';
 
 export default {
     data() {
@@ -63,7 +59,6 @@ export default {
                 this.checkcodeLoding = false;
                 this.checkcodesrc = newImg.src;
             }
-                // sessionStorage.setItem('token','12136');
         },
         submitAjax() {
             if(this.sNumber && this.sPassword && this.checkcode) {
@@ -79,39 +74,36 @@ export default {
                 }).then((result) => {
                     console.log(result.data);
                     if(result.data === 'unregistered') {
+                        //未注册时把学号写入Vuex
+                        this.$store.commit('setUserData', {sNumber: this.sNumber});
+                        console.log(this.userData);
+
                         this.$router.push('/signup');
+                        console.log('未注册 填写完和学号一并发送')
                     } else if(result.data.sNumber === this.sNumber) {
                         this.$router.push('/message');
                         console.log('已注册 显示信息')
                     } else {
                         this.reloadcode();
-                        this.sNumber = '';
-                        this.sPassword = '';
                         this.checkcode = '';
                         this.thenote = ' 输入错误，请重新登录'
-                    } 
+                    }
                 })
                 this.thenote = ' 正在登录，请稍后...'
             } else {
                 this.thenote = ' 请输入完整信息'
             }
-        }
+        },
+        // ...mapMutations(['']),
     },
     computed: {
-        ...mapGetters(['token'])
+        ...mapState(['userData']),
+        // ...mapGetters(['']),
     },
 }
 </script>
 
 <style scoped>
-#adminlink {
-    text-decoration: none;
-    position: absolute;
-    top: 20px;
-    right: 25px;
-    color: #eee;
-}
-
 #subTitle {
     text-align: center;
     margin: 60px 0 50px 0;
@@ -155,7 +147,6 @@ export default {
     cursor: pointer;
     border-color: #2CAC62;
     background-color: #2CAC62;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
     box-shadow: 0 7px 30px 10px rgba(255, 255, 255, .2) inset, 0 1px 4px 0 rgba(0, 0, 0, .2);
 }
 
@@ -178,7 +169,7 @@ input::placeholder {
     margin: 20px 0;
     border: 1px solid #fff;
     border-radius: 500px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2) inset;
+    box-shadow: 0 2px 10px 5px rgba(0, 0, 0, .2) inset;
 }
 
 .itssub {

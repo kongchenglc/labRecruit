@@ -42,25 +42,16 @@ export default {
 </script>
 
 <style scoped>
+#container {
+    padding: 10px;
+}
+
 #subTitle {
     text-align: center;
     margin: 60px 0 50px 0;
     font-weight: 500;
 }
 
-#container {
-    padding: 10px;
-}
-
-
-#thesubm {
-    margin-top: 50px;
-    cursor: pointer;
-    border-color: #2CAC62;
-    background-color: #2CAC62;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
-    box-shadow: 0 7px 30px 10px rgba(255, 255, 255, .2) inset, 0 1px 4px 0 rgba(0, 0, 0, .2);
-}
 
 input {
     background: transparent;
@@ -78,7 +69,7 @@ input {
     margin: 20px 0;
     border: 1px solid #fff;
     border-radius: 500px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2) inset;
+    box-shadow: 0 2px 10px 5px rgba(0, 0, 0, .2) inset;
 }
 input::placeholder {
     color: rgba(220, 220, 220, .8);
@@ -88,6 +79,14 @@ input::placeholder {
 .itssub {
     margin-left: 8%;
     cursor: pointer;
+}
+
+#thesubm {
+    margin-top: 50px;
+    cursor: pointer;
+    border-color: #2CAC62;
+    background-color: #2CAC62;
+    box-shadow: 0 7px 30px 10px rgba(255, 255, 255, .2) inset, 0 1px 4px 0 rgba(0, 0, 0, .2);
 }
 
 

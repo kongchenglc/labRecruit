@@ -78,13 +78,14 @@ section {
     border: 1px solid white;
     border-radius: 35px;
     position: relative;
+    box-shadow: 0 2px 10px 5px rgba(0, 0, 0, .2) inset;
 }
 
 h3 {
-    margin: 0;
+    margin: 0 0 15% 0;
 }
 p {
-    margin: 5% 0 5% 30%;
+    margin: 15px 0 15px 30%;
     border-bottom: 1px solid snow;
     text-align: center;
 }
@@ -97,7 +98,7 @@ p {
 #interview_status {
     width: 165px;
     height: 20px;
-    margin: 30px auto;
+    margin: 40px auto;
     overflow: hidden;
 }
 .point {

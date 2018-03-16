@@ -24,7 +24,7 @@
             <ul id="subjects"  v-show="selecting">
                  <li class="subject" @click="select(index)" v-for='(item, index) of subjects' :key="index">{{item}}</li> 
             </ul>
-            <i id="the-arrow" class="fa fa-chevron-down"></i>
+            <i id="the-arrow" class="fa fa-chevron-down" :class="selecting?'arrow-selecting':''"></i>
         </div>
 
         <div id="thesubm" class="input-item"  @click="submitAjax">
@@ -119,7 +119,7 @@ input::placeholder {
     margin: 20px 0;
     border: 1px solid #fff;
     border-radius: 500px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2) inset;
+    box-shadow: 0 2px 10px 5px rgba(0, 0, 0, .2) inset;
 }
 
 
@@ -136,8 +136,8 @@ input::placeholder {
     padding: 8px;
     width: 80%;
     border: 1px solid white;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
-    background-color: rgba(100, 100, 100, .15);
+    box-shadow: 0 2px 10px 5px rgba(0, 0, 0, .2);
+    background-color: rgba(50, 50, 50, .2);
     border-radius: 0 0 10px 10px;
 }
 .subject {
@@ -147,7 +147,7 @@ input::placeholder {
     border-bottom: 1px solid rgba(100, 100, 100, .2); 
 }
 .subject:hover {
-    background-color: rgba(0, 0, 0, .1);
+    background-color: rgba(0, 0, 0, .2);
 }
 
 li {
@@ -158,6 +158,10 @@ li {
     right: 15px;
     top: 10px;
     cursor: pointer;
+    transition: all .3s;
+}
+.arrow-selecting {
+    transform: rotateX(180deg) rotateY(180deg);
 }
 
 
@@ -167,7 +171,6 @@ li {
     cursor: pointer;
     border-color: #2CAC62;
     background-color: #2CAC62;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
     box-shadow: 0 7px 30px 10px rgba(255, 255, 255, .2) inset, 0 1px 4px 0 rgba(0, 0, 0, .2);
 }
 .itssub {
