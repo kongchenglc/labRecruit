@@ -13,6 +13,17 @@ const router = new Router()
 const db = monk(databaseUrl);
 let theCookie = ''
 
+
+async function setInDatabase(data) {
+    return db.get('student').insert(data)
+    .then(data => {
+        return 'saveSuccess';
+    })
+    .catch(err => {
+        return JSON.stringify(err);
+    });
+}
+
 function getJsonFromClient(ctx) {
     return new Promise((resolve, reject)=>{
         let chunks = ''
@@ -93,7 +104,6 @@ async function sendBacktoClient(ctx, status) {
     });
     await ctx.res.write(status);
     await ctx.res.end();
-
 }
 
 async function loginCheck(ctx) {
@@ -152,8 +162,9 @@ async function loginGetCheckcode(ctx) {
 }
 
 async function signIn(ctx) {
-    let data = getJsonFromClient(ctx);
-    
+    let data = await getJsonFromClient(ctx);
+    let status = await setInDatabase(data);
+    await sendBacktoClient(ctx, status);
 }
 
 
