@@ -75,13 +75,12 @@ export default {
                     console.log(result.data);
                     if(result.data === 'unregistered') {
                         //未注册时把学号写入Vuex
-                        this.$store.commit('setUserData', {sNumber: this.sNumber});
-                        console.log(this.userData);
-
                         this.$router.push('/signup');
+                        this.$store.commit('setUserData', {sNumber: this.sNumber});
                         console.log('未注册 填写完和学号一并发送')
                     } else if(result.data.sNumber === this.sNumber) {
                         this.$router.push('/message');
+                        this.$store.commit('setUserData', result.data);
                         console.log('已注册 显示信息')
                     } else {
                         this.reloadcode();

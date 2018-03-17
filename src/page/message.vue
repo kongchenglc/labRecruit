@@ -36,15 +36,15 @@
 
                 <div id="interview_status">
                         <div class="point passed"></div>
-                    <div class="passed">
+                    <div :class="statusFirst?'passed':''">
                         <div class="line"></div>
                         <div class="point"></div>
                     </div>
-                    <div>
+                    <div :class="statusSecond?'passed':''">
                         <div class="line"></div>
                         <div class="point"></div>
                     </div>
-                    <div>
+                    <div :class="statusThrid?'passed':''">
                         <div class="line"></div>
                         <div class="point"></div>
                     </div>
@@ -52,7 +52,7 @@
 
                 <p>
                     <span class="key">当前状态：</span>
-                    <span>一面通过</span>
+                    <span>{{statusText}}</span>
                 </p>
 
             </section>
@@ -65,8 +65,41 @@
 import {mapGetters} from 'vuex';
 
     export default {
+        data() {
+            return {
+                statusText: '等待沟通'
+            }
+        },
         computed: {
             ...mapGetters(['getUserData']),
+            status() {
+                if(this.getUserData.status) {
+                    return this.getUserData.status.split('');
+                } else {
+                    return ['0','0','0'];
+                }
+            },
+            statusFirst() {
+                if(Number(this.status[0])) {
+                    this.statusText = '一面通过'
+                    return 1;
+                }
+                return 0;
+            },
+            statusSecond() {
+                if(Number(this.status[1])) {
+                    this.statusText = '二面通过'
+                    return 1;
+                }
+                return 0;
+            },
+            statusThrid() {
+                if(Number(this.status[2])) {
+                    this.statusText = '欢迎加入小组'
+                    return 1;
+                }
+                return 0;
+            },
         }
     }
 </script>
