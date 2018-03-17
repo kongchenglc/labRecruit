@@ -27,14 +27,22 @@
             <i id="the-arrow" class="fa fa-chevron-down" :class="selecting?'arrow-selecting':''"></i>
         </div>
 
+        <p id="notes">
+            <small :class="selecting?'blur':''">
+                * {{thenote}}
+            </small>
+        </p>
+
         <div id="thesubm" class="input-item"  @click="submitAjax">
-            <input :class="selecting?'sub-blur':'itssub'" class="itssub" type="submit" value="提交"></input>
+            <input :class="selecting?'blur':'itssub'" class="itssub" type="submit" value="提交"></input>
         </div>
 
     </div>
 </template>
 
 <script>
+import {mapGetters, mapMutations} from 'vuex';
+
 export default {
     data() {
         return {
@@ -50,6 +58,7 @@ export default {
             sClass: '',
             sPhone: '',
             sSubject: '请选择方向',
+            thenote: ' '
         }
     },
     methods: {
@@ -58,24 +67,38 @@ export default {
         },
         submitAjax() {
             if(this.sName && this.sClass && this.sPhone && this.selected) {
+                this.thenote = ' 请稍后...'
+                let sData = {
+                    sNumber: this.getUserData.sNumber,
+                    sName: this.sName,
+                    sClass: this.sClass,
+                    sPhone: this.sPhone,
+                    sSubject: this.sSubject,
+                }
+                //sessionStorage
                 this.$axios({
                     method: 'post',
                     url: 'http://localhost:3000/signup',
-                    data: {
-                        sName: this.sName,
-                        sClass: this.sClass,
-                        sPhone: this.sPhone,
-                        sSubject: this.sSubject,
+                    data: sData,
+                }).then(result => {
+                    console.log(result.data);
+                    if(result.data === 'saveSuccess') {
+                        this.setUserData(sData);
+                        this.$router.replace('/success');
                     }
-                }).then(data => {
-                    console.log(data);
                 })
+            } else {
+                this.thenote = ' 请填写完整信息'
             }
         },
         select(index) {
             this.sSubject = this.subjects[index];
             this.selected = true;
-        }
+        },
+        ...mapMutations(['setUserData']),
+    },
+    computed: {
+        ...mapGetters(['getUserData']),
     }
 }
 </script>
@@ -166,8 +189,12 @@ li {
 
 
 
+#notes {
+    margin-left: 7%;
+}
+
+
 #thesubm {
-    margin-top: 40px;
     cursor: pointer;
     border-color: #2CAC62;
     background-color: #2CAC62;
@@ -177,7 +204,7 @@ li {
     margin-left: 8%;
     cursor: pointer;
 }
-.sub-blur {
+.blur {
     filter: blur(2px);    
 }
 

@@ -88,6 +88,8 @@ export default {
                         this.checkcode = '';
                         this.thenote = ' 输入错误，请重新登录'
                     }
+                }).catch(err => {
+                    console.log(err);
                 })
                 this.thenote = ' 正在登录，请稍后...'
             } else {

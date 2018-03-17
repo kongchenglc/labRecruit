@@ -9,23 +9,23 @@
                 </h3>
                 <p>
                     <span class="key">姓名：</span>
-                    <span>李诚</span>
+                    <span>{{this.getUserData.sName}}</span>
                 </p>
                 <p>
                     <span class="key">学号：</span>
-                    <span>04151092</span>
+                    <span>{{this.getUserData.sNumber}}</span>
                 </p>
                 <p>
                     <span class="key">班级：</span>
-                    <span>计科1503</span>
+                    <span>{{this.getUserData.sClass}}</span>
                 </p>
                 <p>
                     <span class="key">选择方向：</span>
-                    <span>web前端</span>
+                    <span>{{this.getUserData.sSubject}}</span>
                 </p>
                 <p>
                     <span class="key">电话号码：</span>
-                    <span>18829211951</span>
+                    <span>{{this.getUserData.sPhone}}</span>
                 </p>
 
             </section>
@@ -35,13 +35,19 @@
                 </h3>
 
                 <div id="interview_status">
-                    <div class="point passed"></div>
-                    <div class="line passed"></div>
-                    <div class="point passed"></div>
-                    <div class="line"></div>
-                    <div class="point"></div>
-                    <div class="line"></div>
-                    <div class="point"></div>
+                        <div class="point passed"></div>
+                    <div class="passed">
+                        <div class="line"></div>
+                        <div class="point"></div>
+                    </div>
+                    <div>
+                        <div class="line"></div>
+                        <div class="point"></div>
+                    </div>
+                    <div>
+                        <div class="line"></div>
+                        <div class="point"></div>
+                    </div>
                 </div>
 
                 <p>
@@ -56,8 +62,12 @@
 </template>
 
 <script>
-    export default {
+import {mapGetters} from 'vuex';
 
+    export default {
+        computed: {
+            ...mapGetters(['getUserData']),
+        }
     }
 </script>
 
@@ -119,6 +129,7 @@ p {
      box-shadow: inset 0 7px 30px 10px hsla(0,0%,100%,.2), 0 1px 4px 0 rgba(0,0,0,.2);     
     float: left;
 }
+.passed>div,
 .passed {
     background-color: #2cac62;
 }
