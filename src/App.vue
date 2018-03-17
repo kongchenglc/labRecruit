@@ -41,9 +41,6 @@ body {
 }
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #fff;
   text-shadow: 0 1px 4px rgba(0, 0, 0, .5);
