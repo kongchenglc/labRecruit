@@ -3,23 +3,34 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex);
 
+function set_SessionStorage(theData) {
+    sessionStorage.setItem('userData', JSON.stringify(theData));
+}
+function take_sessionStorage() {
+    return JSON.parse(sessionStorage.getItem('userData'));
+}
+
+
 export default new Vuex.Store({
     state: {
         userData: {
-            sNumber: '1111',
-            sName: '12138',
         }
     },
     mutations: {
         setUserData(state, data) {
-            console.log(state, data);
             state.userData = data; 
+            set_SessionStorage(data);
         }
-        // sessionStorage.setItem('token','12136');
     },
     getters: {
-        token() {
-            return sessionStorage.getItem('token');
+        getUserData(state) {
+            if(state.userData.sNumber) {
+                return state.userData;
+            } else if (take_sessionStorage()) {
+                return take_sessionStorage();
+            } else {
+                return {sNumber: 'who is your dad'};
+            }
         }
     },
     actions: {
