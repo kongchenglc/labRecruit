@@ -14,6 +14,8 @@ function take_sessionStorage() {
 export default new Vuex.Store({
     state: {
         userData: {
+        },
+        AdminData: {
         }
     },
     mutations: {
