@@ -79,7 +79,7 @@ export default {
                 //sessionStorage
                 this.$axios({
                     method: 'post',
-                    url: 'http://localhost:3000/signup',
+                    url: this.$route.path,
                     data: sData,
                 }).then(result => {
                     console.log(result.data);
@@ -87,6 +87,8 @@ export default {
                         this.setUserData(sData);
                         this.$router.replace('/success');
                     }
+                }).catch(err => {
+                    console.log(err);
                 })
             } else {
                 this.thenote = ' 请填写完整信息'

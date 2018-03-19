@@ -12,6 +12,12 @@
             <i class="fa fa-key"></i>
             <input type="password" placeholder="请输入密码" v-model="aPassword" @keyup.enter="submit"></input>
         </div>
+        
+        <p id="notes">
+            <small>
+                *{{thenote}}
+            </small>
+        </p>
 
         <div id="thesubm" class="input-item" @click="submit">
             <input class="itssub" type="submit" value="登录"></input>
@@ -21,22 +27,44 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex';
+
 export default {
     data() {
         return {
            aNumber: '',
-           aPassword: ''
+           aPassword: '',
+           thenote: ' ',
         }
     },
     methods: {
         submit() {
-            this.axios({
-                data: {
-                    aNumber: this.aNumber,
-                    aPassword: this.aPassword,
-                }
-            })
-        }
+            if(this.aNumber && this.aPassword) {
+                this.thenote = ' 正在登录，请稍后...';
+                this.$axios({
+                    method: 'post',
+                    url: this.$route.path,
+                    data: {
+                        aNumber: this.aNumber,
+                        aPassword: this.aPassword,
+                    }
+                }).then(result => {
+                    console.log(result.data);
+                    if(result.data === 'HeIsAdmin') {
+                        this.thenote = ' ';
+                        this.setAdminData({'identity': 'HeIsAdmin'});
+                        this.$router.push('/admin_messages');
+                    } else {
+                        this.thenote = ' 输入错误，请重新输入';                        
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            } else {
+                this.thenote = ' 请输入完整信息';
+            }
+        },
+        ...mapMutations(['setAdminData']),
     }
 }
 </script>
@@ -76,13 +104,17 @@ input::placeholder {
 }
 
 
+#notes {
+    margin-left: 7%;
+}
+
+
 .itssub {
     margin-left: 8%;
     cursor: pointer;
 }
 
 #thesubm {
-    margin-top: 50px;
     cursor: pointer;
     border-color: #2CAC62;
     background-color: #2CAC62;

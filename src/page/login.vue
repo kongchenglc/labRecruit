@@ -62,10 +62,9 @@ export default {
         },
         submitAjax() {
             if(this.sNumber && this.sPassword && this.checkcode) {
-                // $store.
                 this.$axios({
                     method: 'post',
-                    url: 'http://localhost:3000/login',
+                    url: this.$route.path,
                     data: {
                         sNumber: this.sNumber,
                         sPassword: this.sPassword,
@@ -95,12 +94,13 @@ export default {
                 this.thenote = ' 请输入完整信息'
             }
         },
-        // ...mapMutations(['']),
     },
     computed: {
         ...mapState(['userData']),
-        // ...mapGetters(['']),
     },
+    // mounted() {
+    //     this.reloadcode();
+    // },
 }
 </script>
 
@@ -133,7 +133,6 @@ export default {
 }
 
 #checkcode {
-    /* overflow: hidden; */
     margin-top: 0;
     float: right;
     width: 50%;
