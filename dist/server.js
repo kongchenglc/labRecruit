@@ -14,6 +14,38 @@ const db = monk(databaseUrl);
 let theCookie = ''
 
 
+async function dbSearchMessages(data) {
+    console.log('db searching...');
+    return db.get('student')
+    .find({ $or: [
+        { sName: new RegExp(`.*${data.searchText}.*`) },
+        { sNumber: new RegExp(`.*${data.searchText}.*`) },
+        { sClass: new RegExp(`.*${data.searchText}.*`) },
+        { sSubject: new RegExp(`.*${data.searchText}.*`) },
+        { sPhone: new RegExp(`.*${data.searchText}.*`) },
+        { status: new RegExp(`.*${data.searchText}.*`) },
+    ] }, {_id: 0, sPassword: 0})
+    .then(result => {
+        return JSON.stringify(Object.assign({}, result));
+    }).catch(err => {
+        console.log(err);
+        return 'db err';
+    })
+}
+
+async function dbCheckAdmin(data) {
+    return db.get('admin').find(data)
+    .then(data => {
+        if(data[0]) {
+            return 'HeIsAdmin';
+        } else {
+            return 'InputError';
+        }
+    }).catch(err => {
+        return JSON.stringify(err);
+    })
+}
+
 async function setInDatabase(data) {
     return db.get('student').insert(data)
     .then(data => {
@@ -33,6 +65,7 @@ function getJsonFromClient(ctx) {
         ctx.req.on('end', () => {
             let data = JSON.parse(chunks)
             resolve(data);
+            console.log('request: ');
             console.log(data);
         })
     });
@@ -97,10 +130,9 @@ async function sendToWebsite(data) {
 }
 
 async function sendBacktoClient(ctx, status) {
+    console.log('response: ');
     console.log(status);
     await ctx.res.writeHead(200, {
-        'Accept-Ranges': 'bytes',
-        'Transfer-Encoding': 'identity'
     });
     await ctx.res.write(status);
     await ctx.res.end();
@@ -144,8 +176,8 @@ async function loginGetCheckcode(ctx) {
             }
             ctx.res.writeHead(200, {
                 'Content-Type': 'image/png;',
-                'Accept-Ranges': 'bytes',
-                'Transfer-Encoding': 'identity'
+                // 'Accept-Ranges': 'bytes',
+                // 'Transfer-Encoding': 'identity'
             });
             //\配置客户端相应头
 
@@ -167,6 +199,18 @@ async function signIn(ctx) {
     await sendBacktoClient(ctx, status);
 }
 
+async function adminLogin(ctx) {
+    let data = await getJsonFromClient(ctx);
+    let status = await dbCheckAdmin(data);
+    await sendBacktoClient(ctx, status);
+}
+
+async function adminSearch(ctx) {
+    let data = await getJsonFromClient(ctx);
+    let status = await dbSearchMessages(data);
+    await sendBacktoClient(ctx, status);
+}
+
 
 //转发验证码和cookie
 router.get('/CheckCode.aspx', async (ctx, next) => {
@@ -178,16 +222,22 @@ router.get('/CheckCode.aspx', async (ctx, next) => {
 //处理post请求
 app.use(async (ctx, next) => {
     await next();
-    if (ctx.url === '/login' && ctx.method === 'POST') {
-        //学生登录
-        await loginCheck(ctx);
-    } else if (ctx.url === '/signup' && ctx.method === 'POST') {
-        //学生信息
-        await signIn(ctx);
-    } else if (ctx.url === '/admin_login' && ctx.method === 'POST') {
-        //管理员登录
-    } else {
-        // console.log('other: ' + ctx.url + ' + ' + ctx.method);  
+    if (ctx.method === 'POST') {
+        if (ctx.url === '/login') {
+            //学生登录
+            await loginCheck(ctx);
+        } else if (ctx.url === '/signup') {
+            //学生信息
+            await signIn(ctx);
+        } else if (ctx.url === '/admin_login') {
+            //管理员登录
+            await adminLogin(ctx);
+        } else if (ctx.url === '/admin_messages') {
+            //管理员查询
+            await adminSearch(ctx);
+        } else {
+            // console.log('other: ' + ctx.url + ' + ' + ctx.method);  
+        }
     }
 })
 
