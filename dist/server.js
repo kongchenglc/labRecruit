@@ -20,9 +20,9 @@ async function dbSearchMessages(data) {
     .find({ $or: [
         { sName: new RegExp(`.*${data.searchText}.*`) },
         { sNumber: new RegExp(`.*${data.searchText}.*`) },
-        { sClass: new RegExp(`.*${data.searchText}.*`) },
+        // { sClass: new RegExp(`.*${data.searchText}.*`) },
         { sSubject: new RegExp(`.*${data.searchText}.*`) },
-        { sPhone: new RegExp(`.*${data.searchText}.*`) },
+        // { sPhone: new RegExp(`.*${data.searchText}.*`) },
         { status: new RegExp(`.*${data.searchText}.*`) },
     ] }, {_id: 0, sPassword: 0})
     .then(result => {
