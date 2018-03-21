@@ -4,9 +4,36 @@
         <h1 id="subTitle">ThoughtCoding</h1>
 
         <div id="search-div">
-            <input v-model="searchText" id="search-input" type="text" placeholder="搜索" @keyup.enter="search">
+            <input v-model="searchText" id="search-input" type="text" placeholder="姓名、学号、方向或状态" @keyup.enter="search">
             <i id="search-ico" class="fa fa-search" @click="search"></i> 
         </div>
+
+        <article>
+            <section>
+                <p class="items" v-for="(item, index) of messages" :key="index" @click="changeState(index)">
+                    <span class="information">
+                        {{item.sNumber}} 
+                    </span>
+
+                    <span class="information">
+                        {{item.sName}} 
+                    </span>
+                    
+                    <span class="information">
+                        {{item.status === '000'
+                            ? '等待沟通 ' 
+                            : item.status === '100'
+                                ? '一面通过 '
+                                : item.status === '110'
+                                    ? '二面通过 '
+                                    : item.status === '111'
+                                        ?'已通过   ': 'err'
+                        }}
+                    </span>
+                    <i class="fa fa-chevron-right" id="wrench"></i>
+                </p>
+            </section>
+        </article>
         
     </div>
 </template>
@@ -18,12 +45,19 @@ export default {
     data() {
         return {
             searchText: '',
+            messages: {
+                "0": { "sNumber": "04151092", "sName": "李诚", "sClass": "计科1507", "sPhone": "18829211951", "sSubject": "前端", "status": "000" }
+            },
         }
     },
     methods: {
+        changeState(index) {
+            console.log(this.messages[index]);
+            this.$store.commit('setOnesMessage', this.messages[index]);
+            this.$router.push('/admin_message');
+        },
         search() {
             if(this.searchText) {
-                console.log(this.searchText);
                 this.$axios({
                     method: 'post',
                     url: this.$route.path,
@@ -31,7 +65,7 @@ export default {
                         searchText : this.searchText,
                     }
                 }).then(result => {
-                    console.log(result.data);
+                    this.messages = result.data;
                 }).catch(err => {
                     console.log(err);
                 })
@@ -83,6 +117,36 @@ export default {
     top: -10px;
     padding: 20px;
 }
+
+.items {
+    cursor: pointer;
+    padding: 5px;
+    color: white;
+    border-bottom: 1px solid rgba(100, 100, 100, .2);
+    position: relative;
+}
+
+.information:first-child { 
+    text-align: left;
+}
+
+.information:nth-child(2) {
+    text-align: center;
+}
+
+.information {
+    display: inline-block;
+    text-align: right;
+    width: 30%;
+}
+
+#wrench {
+    position: absolute;
+    top: 9px;
+    right: 5px;
+}
+
+
 
 @media screen and (min-width: 600px) {
     #container {

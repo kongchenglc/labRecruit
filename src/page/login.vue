@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import {mapState, mapMutations, mapGetters, mapActions } from 'vuex';
+import {mapMutations} from 'vuex';
 
 export default {
     data() {
@@ -84,6 +84,7 @@ export default {
                     } else {
                         this.reloadcode();
                         this.checkcode = '';
+                        this.sPassword = '';
                         this.thenote = ' 输入错误，请重新登录'
                     }
                 }).catch(err => {
@@ -94,13 +95,8 @@ export default {
                 this.thenote = ' 请输入完整信息'
             }
         },
+        ...mapMutations(['setUserData']),
     },
-    computed: {
-        ...mapState(['userData']),
-    },
-    // mounted() {
-    //     this.reloadcode();
-    // },
 }
 </script>
 
