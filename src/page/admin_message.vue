@@ -5,21 +5,72 @@
 
         <article>
             <section>
-                <p>{{getOnesMessage}}</p>
+                <p class="items" v-for="(item, index) of getOnesMessage" :key="index">
+                    {{index}}: 
+                    <span class="item-value">
+                        {{item}}
+                    </span> 
+                </p>
+
+                <div id="change-status">
+                    <div  class="select_radio">
+                        <input v-model="theStatus" type="radio" name="status" value="000" id="wait">
+                        <label for="wait">等待沟通</label>
+                    </div>
+                    <div  class="select_radio">
+                        <input v-model="theStatus" type="radio" name="status" value="100" id="first">
+                        <label for="first">一面通过</label>
+                    </div>
+                    <div  class="select_radio">
+                        <input v-model="theStatus" type="radio" name="status" value="110" id="second">
+                        <label for="second">二面通过</label>
+                    </div>
+                    <div  class="select_radio">
+                        <input v-model="theStatus" type="radio" name="status" value="111" id="over">
+                        <label for="over">终面通过</label>
+                    </div>
+                </div>
+
+                <div id="thesubm" @click="confirm">
+                    <input class="itssub" type="submit" value="更改状态"></input>
+                </div>
             </section>
         </article>
     </div>
-
-
 </template>
 
 <script>
 import {mapGetters} from 'Vuex'
 
 export default {
-    computed: {
-        ...mapGetters(['getOnesMessage']),
+    data() {
+        return {
+            theStatus: '',
+        }
     },
+    computed: {
+        theSNumber() {
+            return this.getOnesMessage.sNumber;
+        },
+        ...mapGetters(['getOnesMessage', 'getAdminData']),
+    },
+    methods: {
+        confirm() {
+            this.$axios({
+                method: 'post',
+                url: this.$route.path,
+                data: {
+                    theStatus: this.theStatus,
+                    theSNumber: this.theSNumber,
+                    theToken: this.getAdminData,
+                }
+            }).then(result => {
+                console.log(result.data);
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+    }
 }
 </script>
 
@@ -35,4 +86,71 @@ export default {
     font-weight: 500;
 }
 
+.items {
+    padding: 5px;
+    padding-left: 10%;
+    color: white;
+    border-bottom: 1px solid rgba(100, 100, 100, .2);
+    position: relative;
+    /* text-align: center; */
+    /* width: 200px; */
+    margin: 0 auto;
+}
+.item-value {
+    float: right;
+    width: 50%;
+    text-align: left;
+}
+
+#change-status {
+    margin: 0 auto;
+    margin-top: 40px;
+    overflow: hidden;
+    width:80%;
+}
+
+.select_radio {
+    float: left;
+    margin: 0 3%;
+}
+
+
+#thesubm {
+    padding-left: 15px;
+    margin: 40px 0 60px 0;
+    border: 1px solid #fff;
+    border-radius: 500px;
+    cursor: pointer;
+    border-color: #2cac62;
+    background-color: #2cac62;
+    box-shadow: inset 0 7px 30px 10px hsla(0, 0%, 100%, .2), 0 1px 4px 0 rgba(0, 0, 0, .2);
+}
+
+.itssub {
+    background: transparent;
+    border: none;
+    padding-left: 5px;
+    outline: none;
+    color: #fff;
+    width: 80%;
+    line-height: 35px;
+    font-size: 15px;
+    vertical-align: baseline;
+    margin-left: 8%;
+    cursor: pointer;
+}
+
+
+
+@media screen and (min-width: 600px) {
+    #container {
+        width: 450px;
+        margin: 0 auto;
+    }
+
+    .select_radio {
+        float: left;
+        margin: 0;
+    }
+}
 </style>
