@@ -29,7 +29,7 @@
 
         <p id="notes">
             <small :class="selecting?'blur':''">
-                * {{thenote}}
+                {{thenote}}
             </small>
         </p>
 
@@ -67,7 +67,7 @@ export default {
         },
         submitAjax() {
             if(this.sName && this.sClass && this.sPhone && this.selected) {
-                this.thenote = ' 请稍后...'
+                this.thenote = '* 请稍后...'
                 let sData = {
                     sNumber: this.getUserData.sNumber,
                     sName: this.sName,
@@ -91,7 +91,7 @@ export default {
                     console.log(err);
                 })
             } else {
-                this.thenote = ' 请填写完整信息'
+                this.thenote = '* 请填写完整信息'
             }
         },
         select(index) {
@@ -194,6 +194,7 @@ li {
 
 #notes {
     margin-left: 7%;
+    height: 21px;
 }
 
 

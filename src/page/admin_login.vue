@@ -15,7 +15,7 @@
         
         <p id="notes">
             <small>
-                *{{thenote}}
+                {{thenote}}
             </small>
         </p>
 
@@ -40,7 +40,7 @@ export default {
     methods: {
         submit() {
             if(this.aNumber && this.aPassword) {
-                this.thenote = ' 正在登录，请稍后...';
+                this.thenote = '* 正在登录，请稍后...';
                 this.$axios({
                     method: 'post',
                     url: this.$route.path,
@@ -49,19 +49,18 @@ export default {
                         aPassword: this.aPassword,
                     }
                 }).then(result => {
-                    console.log(result.data);
                     if(result.data === 'HeIsAdmin') {
-                        this.thenote = ' ';
+                        this.thenote = '* ';
                         this.setAdminData({'identity': 'HeIsAdmin'});
                         this.$router.push('/admin_messages');
                     } else {
-                        this.thenote = ' 输入错误，请重新输入';                        
+                        this.thenote = '* 输入错误，请重新输入';                        
                     }
                 }).catch(err => {
                     console.log(err);
                 })
             } else {
-                this.thenote = ' 请输入完整信息';
+                this.thenote = '* 请输入完整信息';
             }
         },
         ...mapMutations(['setAdminData']),
@@ -106,6 +105,7 @@ input::placeholder {
 
 #notes {
     margin-left: 7%;
+    height: 21px;
 }
 
 

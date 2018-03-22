@@ -31,6 +31,12 @@
                     </div>
                 </div>
 
+                <p id="notes">
+                    <small>
+                        {{thenote}}
+                    </small>
+                </p>
+
                 <div id="thesubm" @click="confirm">
                     <input class="itssub" type="submit" value="更改状态"></input>
                 </div>
@@ -40,12 +46,13 @@
 </template>
 
 <script>
-import {mapGetters} from 'Vuex'
+import {mapGetters, mapMutations} from 'Vuex'
 
 export default {
     data() {
         return {
             theStatus: '',
+            thenote: ' ',
         }
     },
     computed: {
@@ -56,6 +63,7 @@ export default {
     },
     methods: {
         confirm() {
+            this.thenote = '* 正在连接数据库...'
             this.$axios({
                 method: 'post',
                 url: this.$route.path,
@@ -65,11 +73,19 @@ export default {
                     theToken: this.getAdminData,
                 }
             }).then(result => {
+                if(result.data === 'success') {
+                    this.setOnesStatue(this.theStatus);
+                    this.thenote = '* 状态更新成功'
+                } else {
+                    this.thenote = '* 更新失败'
+                    console.log(result.data);
+                }
                 console.log(result.data);
             }).catch(err => {
                 console.log(err);
             })
-        }
+        },
+        ...mapMutations(['setOnesStatue']),
     }
 }
 </script>
@@ -114,10 +130,16 @@ export default {
     margin: 0 3%;
 }
 
+#notes {
+    margin-top: 40px;
+    margin-left: 7%;
+    height: 21px;
+}
+
 
 #thesubm {
     padding-left: 15px;
-    margin: 40px 0 60px 0;
+    margin-bottom: 60px;
     border: 1px solid #fff;
     border-radius: 500px;
     cursor: pointer;

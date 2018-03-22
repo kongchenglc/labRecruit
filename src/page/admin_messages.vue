@@ -46,7 +46,6 @@ export default {
         return {
             searchText: '',
             messages: {
-                "0": { "sNumber": "04151092", "sName": "李诚", "sClass": "计科1507", "sPhone": "18829211951", "sSubject": "前端", "status": "000" }
             },
         }
     },

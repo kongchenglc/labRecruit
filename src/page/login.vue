@@ -25,7 +25,7 @@
 
         <p id="notes">
             <small>
-                *{{thenote}}
+                {{thenote}}
             </small>
         </p>
 
@@ -43,7 +43,7 @@ export default {
     data() {
         return {
             checkcodesrc: 'http://localhost:3000/CheckCode.aspx',
-            thenote: ' 使用教务系统账号密码登录',
+            thenote: '* 使用教务系统账号密码登录',
             sNumber: '',
             sPassword: '',
             checkcode: '',
@@ -85,14 +85,14 @@ export default {
                         this.reloadcode();
                         this.checkcode = '';
                         this.sPassword = '';
-                        this.thenote = ' 输入错误，请重新登录'
+                        this.thenote = '* 输入错误，请重新登录'
                     }
                 }).catch(err => {
                     console.log(err);
                 })
-                this.thenote = ' 正在登录，请稍后...'
+                this.thenote = '* 正在登录，请稍后...'
             } else {
-                this.thenote = ' 请输入完整信息'
+                this.thenote = '* 请输入完整信息'
             }
         },
         ...mapMutations(['setUserData']),
@@ -137,6 +137,7 @@ export default {
 #notes {
     clear: both;
     padding-left: 10px;
+    height: 21px;
 }
 
 #thesubm {
