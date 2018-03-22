@@ -14,6 +14,26 @@ const db = monk(databaseUrl);
 let theCookie = ''
 
 
+async function dbUpdateState(data) {
+    if(data.theToken === 'HeIsAdmin') {
+        return db
+            .get('student')
+            .update({ 'sNumber': data.sNumber }, { "$set": {status: data.theStatus} })
+            .then(result => {
+                if(result.nModified === 1) {
+                    return 'success';
+                } else {
+                    return 'dbHasNoThisStu';
+                }
+            })
+            .catch(err => {
+                return 'dbError'
+            })
+    } else {
+        return 'TokenError';
+    }
+}
+
 async function dbSearchMessages(data) {
     console.log('db searching...');
     return db.get('student')
@@ -211,6 +231,12 @@ async function adminSearch(ctx) {
     await sendBacktoClient(ctx, status);
 }
 
+async function updateStudentState(ctx) {
+    let data = await getJsonFromClient(ctx);
+    let status = await dbUpdateState(data);
+    await sendBacktoClient(ctx, status);
+}
+
 
 //转发验证码和cookie
 router.get('/CheckCode.aspx', async (ctx, next) => {
@@ -235,8 +261,9 @@ app.use(async (ctx, next) => {
         } else if (ctx.url === '/admin_messages') {
             //管理员查询
             await adminSearch(ctx);
-        } else {
-            // console.log('other: ' + ctx.url + ' + ' + ctx.method);  
+        } else if (ctx.url === '/admin_message') {
+            //管理员更改状态
+            await updateStudentState(ctx);
         }
     }
 })
