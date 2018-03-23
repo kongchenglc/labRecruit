@@ -51,7 +51,6 @@ export default {
     },
     methods: {
         changeState(index) {
-            console.log(this.messages[index]);
             this.$store.commit('setOnesMessage', this.messages[index]);
             this.$router.push('/admin_message');
         },

@@ -82,7 +82,6 @@ export default {
                     url: this.$route.path,
                     data: sData,
                 }).then(result => {
-                    console.log(result.data);
                     if(result.data === 'saveSuccess') {
                         this.setUserData(sData);
                         this.$router.replace('/success');

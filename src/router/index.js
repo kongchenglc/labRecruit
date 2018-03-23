@@ -28,10 +28,10 @@ function studentCheck(to, from, next) {
 }
 
 function adminCheck(to, from, next) {
-  if (hasSession('adminData').identity === 'HelsAdmin') {
+  if (hasSession('adminData').identity === 'HeIsAdmin') {
     next();
   } else {
-    next('/login')
+    next('/admin_login')
   }
 }
 
@@ -47,7 +47,13 @@ export default new Router({
       path: '/signup',
       name: 'Sign Up',
       component: signup,
-      beforeEnter: studentCheck,
+      beforeEnter: (to, from, next) => {
+        if (hasSession('userData') && hasSession('userData').sName === undefined && from.path === '/login') {
+          next();
+        } else {
+          next('/login')
+        }
+      },
     },
     {
       path: '/success',
