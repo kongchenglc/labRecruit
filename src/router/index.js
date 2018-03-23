@@ -11,6 +11,31 @@ import admin_message from '@/page/admin_message'
 
 Vue.use(Router)
 
+function hasSession( key ) {
+  if (JSON.parse(sessionStorage.getItem( key ))) {
+    return JSON.parse(sessionStorage.getItem(key));
+  } else {
+    return false;
+  }
+}
+
+function studentCheck(to, from, next) {
+  if (hasSession('userData')) {
+    next();
+  } else {
+    next('/login')
+  }
+}
+
+function adminCheck(to, from, next) {
+  if (hasSession('adminData').identity === 'HelsAdmin') {
+    next();
+  } else {
+    next('/login')
+  }
+}
+
+
 export default new Router({
   routes: [
     {
@@ -22,16 +47,19 @@ export default new Router({
       path: '/signup',
       name: 'Sign Up',
       component: signup,
+      beforeEnter: studentCheck,
     },
     {
       path: '/success',
       name: 'Congratulations',
       component: success,
+      beforeEnter: studentCheck,
     },
     {
       path: '/message',
       name: 'Message',
       component: message,
+      beforeEnter: studentCheck,
     },
     {
       path: '/admin_login',
@@ -42,11 +70,13 @@ export default new Router({
       path: '/admin_messages',
       name: 'Students Message',
       component: admin_messages,
+      beforeEnter: adminCheck,
     },
     {
       path: '/admin_message',
       name: 'Student Messages',
       component: admin_message,
+      beforeEnter: adminCheck,
     },
     {
       path: '*',
