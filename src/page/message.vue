@@ -36,15 +36,15 @@
 
                 <div id="interview_status">
                         <div class="point passed"></div>
-                    <div :class="statusFirst?'passed':''">
+                    <div :class="statusA">
                         <div class="line"></div>
                         <div class="point"></div>
                     </div>
-                    <div :class="statusSecond?'passed':''">
+                    <div :class="statusB">
                         <div class="line"></div>
                         <div class="point"></div>
                     </div>
-                    <div :class="statusThrid?'passed':''">
+                    <div :class="statusC">
                         <div class="line"></div>
                         <div class="point"></div>
                     </div>
@@ -65,41 +65,64 @@
 import {mapGetters} from 'vuex';
 
     export default {
-        data() {
-            return {
-                statusText: '等待沟通'
-            }
-        },
         computed: {
-            ...mapGetters(['getUserData']),
-            status() {
+            theStatus() {
                 if(this.getUserData.status) {
-                    return this.getUserData.status.split('');
+                    return this.getUserData.status;
                 } else {
-                    return ['0','0','0'];
+                    return '';
                 }
             },
-            statusFirst() {
-                if(Number(this.status[0])) {
-                    this.statusText = '一面通过'
-                    return 1;
-                }
-                return 0;
+            theStatusLength() {
+                return this.theStatus.length;
             },
-            statusSecond() {
-                if(Number(this.status[1])) {
-                    this.statusText = '二面通过'
-                    return 1;
+            statusText() {
+                if(this.theStatusLength === 0) {
+                    return '等待沟通'
+                } else if( this.theStatus[this.theStatusLength - 1] === '0' ) {
+                    return '未通过'
+                } else if( this.statusC === 'passed') {
+                    return '欢迎加入小组'
+                } else if( this.statusB === 'passed') {
+                    return '二面通过'
+                } else if( this.statusA === 'passed') {
+                    return '一面通过'
                 }
-                return 0;
             },
-            statusThrid() {
-                if(Number(this.status[2])) {
-                    this.statusText = '欢迎加入小组'
-                    return 1;
+            statusA() {
+                if(this.theStatusLength >= 1) {
+                    if (this.theStatus[0] === '1') {
+                        return 'passed'
+                    } else if (this.theStatus[0] === '0') {
+                        return 'gameover'
+                    } else {
+                        return ''
+                    }
                 }
-                return 0;
             },
+            statusB() {
+                if(this.theStatusLength >= 2) {
+                    if (this.theStatus[1] === '1') {
+                        return 'passed'
+                    } else if (this.theStatus[1] === '0') {
+                        return 'gameover'
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            statusC() {
+                if(this.theStatusLength === 3) {
+                    if(this.theStatus[2] === '1') {
+                        return 'passed'
+                    } else if (this.theStatus[2] === '0') {
+                        return 'gameover'
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            ...mapGetters(['getUserData']),
         }
     }
 </script>
@@ -165,6 +188,9 @@ p {
 .passed>div,
 .passed {
     background-color: #2cac62;
+}
+.gameover>div {
+    background-color: #CD4C45;
 }
 
 

@@ -74,7 +74,7 @@ export default {
                     sClass: this.sClass,
                     sPhone: this.sPhone,
                     sSubject: this.sSubject,
-                    status: '000',
+                    status: '',
                 }
                 //sessionStorage
                 this.$axios({

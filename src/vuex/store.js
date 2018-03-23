@@ -32,8 +32,8 @@ export default new Vuex.Store({
         setOnesMessage(state, data) {
             state.onesMessage = data;
             set_SessionStorage(data, 'onesMessage');
-        }
-    },
+        },
+     },
     getters: {
         getUserData(state) {
             if (state.userData.sNumber) {
@@ -48,9 +48,9 @@ export default new Vuex.Store({
             if (state.AdminData.identity) {
                 return state.AdminData.identity
             } else if (take_sessionStorage('adminData')) {
-                return take_sessionStorage('adminData');
+                return take_sessionStorage('adminData').identity;
             } else {
-                return '';
+                return 'who is your dad';
             }
         },
         getOnesMessage(state) {
@@ -59,7 +59,10 @@ export default new Vuex.Store({
             } else if (take_sessionStorage('onesMessage')) {
                 return take_sessionStorage('onesMessage');
             } else {
-                return { sNumber: 'who is your dad??' };
+                return { 
+                    sNumber: 'who is your dad??',
+                    status: '',
+                };
             }
         }
     },

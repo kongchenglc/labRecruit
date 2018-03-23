@@ -6,36 +6,72 @@
         <article>
             <section>
                 <p class="items" v-for="(item, index) of getOnesMessage" :key="index">
-                    {{index}}: 
+                    {{
+                        index === 'sNumber'
+                        ? '学号'
+                        : index === 'sName'
+                            ? '姓名'
+                            : index === 'sClass'
+                                ? '班级'
+                                : index === 'sPhone'
+                                    ? '电话'
+                                    : index === 'sSubject'
+                                        ? '方向'
+                                        : index === 'status'
+                                            ? '状态' : '不识别属性'
+                    }}: 
                     <span class="item-value">
-                        {{item}}
+                        {{
+                            index === 'status'
+                            ? item === ''
+                                ? '等待沟通 ' 
+                                : item === '1'
+                                    ? '一面通过 '
+                                    : item === '11'
+                                        ? '二面通过 '
+                                        : item === '111'
+                                            ?'已通过   ': '面试未通过'
+                            :item
+                        }}
                     </span> 
                 </p>
 
-                <div id="change-status">
-                    <div  class="select_radio">
-                        <input v-model="theStatus" type="radio" name="status" value="000" id="wait">
-                        <label for="wait">等待沟通</label>
-                    </div>
-                    <div  class="select_radio">
-                        <input v-model="theStatus" type="radio" name="status" value="100" id="first">
-                        <label for="first">一面通过</label>
-                    </div>
-                    <div  class="select_radio">
-                        <input v-model="theStatus" type="radio" name="status" value="110" id="second">
-                        <label for="second">二面通过</label>
-                    </div>
-                    <div  class="select_radio">
-                        <input v-model="theStatus" type="radio" name="status" value="111" id="over">
-                        <label for="over">终面通过</label>
-                    </div>
-                </div>
+                <div v-show="theOldStatus[theOldStatusLength - 1] !== '0'">
 
-                <p id="notes">
-                    <small>
-                        {{thenote}}
-                    </small>
-                </p>
+                    <div id="change-status" v-show="theOldStatusLength === 0">
+                        <div class="select_radio">
+                            <input v-model="theStatus" type="radio" name="status" value="1" id="firstover">
+                            <label for="firstover">一面通过</label>
+                        </div>
+                        <div class="select_radio">
+                            <input v-model="theStatus" type="radio" name="status" value="0" id="firstpass">
+                            <label for="firstpass">一面不通过</label>
+                        </div>
+                    </div>
+
+                    <div id="change-status" v-show="theOldStatusLength === 1">
+                        <div class="select_radio">
+                            <input v-model="theStatus" type="radio" name="status" value="11" id="secondover">
+                            <label for="secondover">二面通过</label>
+                        </div>
+                        <div class="select_radio">
+                            <input v-model="theStatus" type="radio" name="status" value="10" id="secondpass">
+                            <label for="secondpass">二面不通过</label>
+                        </div>
+                    </div>
+
+                    <div id="change-status" v-show="theOldStatusLength === 2">
+                        <div class="select_radio">
+                            <input v-model="theStatus" type="radio" name="status" value="111" id="thirdover">
+                            <label for="thirdover">终面通过</label>
+                        </div>
+                        <div class="select_radio">
+                            <input v-model="theStatus" type="radio" name="status" value="110" id="thirdpass">
+                            <label for="thirdpass">终面不通过</label>
+                        </div>
+                    </div>
+
+                </div>
 
                 <div id="thesubm" @click="confirm">
                     <input class="itssub" type="submit" value="更改状态"></input>
@@ -52,40 +88,43 @@ export default {
     data() {
         return {
             theStatus: '',
-            thenote: ' ',
         }
     },
     computed: {
         theSNumber() {
             return this.getOnesMessage.sNumber;
         },
+        theOldStatus() {
+            return this.getOnesMessage.status;
+        },
+        theOldStatusLength() {
+            return this.theOldStatus.length;
+        },
         ...mapGetters(['getOnesMessage', 'getAdminData']),
     },
     methods: {
         confirm() {
-            this.thenote = '* 正在连接数据库...'
-            this.$axios({
-                method: 'post',
-                url: this.$route.path,
-                data: {
-                    theStatus: this.theStatus,
-                    theSNumber: this.theSNumber,
-                    theToken: this.getAdminData,
-                }
-            }).then(result => {
-                if(result.data === 'success') {
-                    this.setOnesStatue(this.theStatus);
-                    this.thenote = '* 状态更新成功'
-                } else {
-                    this.thenote = '* 更新失败'
-                    console.log(result.data);
-                }
-                console.log(result.data);
-            }).catch(err => {
-                console.log(err);
-            })
+            if( window.confirm('确定修改？') ) {
+                this.$axios({
+                    method: 'post',
+                    url: this.$route.path,
+                    data: {
+                        theStatus: this.theStatus,
+                        theSNumber: this.theSNumber,
+                        theToken: this.getAdminData,
+                    }
+                }).then(result => {
+                    if(result.data === 'success') {
+                        alert('更新成功')
+                        this.$router.push('/admin_messages')
+                    } else {
+                        alert('更新失败')
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
         },
-        ...mapMutations(['setOnesStatue']),
     }
 }
 </script>
@@ -123,23 +162,18 @@ export default {
     margin-top: 40px;
     overflow: hidden;
     width:80%;
+    display: flex;
 }
 
 .select_radio {
     float: left;
-    margin: 0 3%;
-}
-
-#notes {
-    margin-top: 40px;
-    margin-left: 7%;
-    height: 21px;
+    flex: 1;
 }
 
 
 #thesubm {
     padding-left: 15px;
-    margin-bottom: 60px;
+    margin:40px 0 60px 0;
     border: 1px solid #fff;
     border-radius: 500px;
     cursor: pointer;
@@ -168,11 +202,6 @@ export default {
     #container {
         width: 450px;
         margin: 0 auto;
-    }
-
-    .select_radio {
-        float: left;
-        margin: 0;
     }
 }
 </style>

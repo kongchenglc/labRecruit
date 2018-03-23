@@ -20,14 +20,14 @@
                     </span>
                     
                     <span class="information">
-                        {{item.status === '000'
+                        {{item.status === ''
                             ? '等待沟通 ' 
-                            : item.status === '100'
+                            : item.status === '1'
                                 ? '一面通过 '
-                                : item.status === '110'
+                                : item.status === '11'
                                     ? '二面通过 '
                                     : item.status === '111'
-                                        ?'已通过   ': 'err'
+                                        ?'已通过   ': '面试未通过'
                         }}
                     </span>
                     <i class="fa fa-chevron-right" id="wrench"></i>

@@ -18,8 +18,9 @@ async function dbUpdateState(data) {
     if(data.theToken === 'HeIsAdmin') {
         return db
             .get('student')
-            .update({ 'sNumber': data.sNumber }, { "$set": {status: data.theStatus} })
+            .update({ 'sNumber': data.theSNumber }, { "$set": {status: data.theStatus} })
             .then(result => {
+                    console.log(result)
                 if(result.nModified === 1) {
                     return 'success';
                 } else {
