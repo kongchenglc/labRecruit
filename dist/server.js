@@ -211,6 +211,8 @@ async function loginGetCheckcode(ctx) {
                 resolve();
             })
         })
+    }).catch(err => {
+        console.log(err);
     })
 }
 
