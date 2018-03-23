@@ -20,7 +20,6 @@ async function dbUpdateState(data) {
             .get('student')
             .update({ 'sNumber': data.theSNumber }, { "$set": {status: data.theStatus} })
             .then(result => {
-                    console.log(result)
                 if(result.nModified === 1) {
                     return 'success';
                 } else {
@@ -86,8 +85,6 @@ function getJsonFromClient(ctx) {
         ctx.req.on('end', () => {
             let data = JSON.parse(chunks)
             resolve(data);
-            console.log('request: ');
-            console.log(data);
         })
     });
 }
@@ -95,7 +92,6 @@ function getJsonFromClient(ctx) {
 async function checkDBSigned(sNumber) {
     console.log('db checking...');
     return db.get('student').find({ sNumber },{ _id: 0 }).then(data => {
-        console.log(data);
         if(data.length) {
             return JSON.stringify(data[0]);
         } else {
@@ -151,8 +147,6 @@ async function sendToWebsite(data) {
 }
 
 async function sendBacktoClient(ctx, status) {
-    console.log('response: ');
-    console.log(status);
     await ctx.res.writeHead(200, {
     });
     await ctx.res.write(status);
