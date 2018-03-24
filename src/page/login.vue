@@ -42,7 +42,7 @@ import {mapMutations} from 'vuex';
 export default {
     data() {
         return {
-            checkcodesrc: 'http://localhost:3000/CheckCode.aspx',
+            checkcodesrc: `${this.$route.path}/CheckCode.aspx`,
             thenote: '* 使用教务系统账号密码登录',
             sNumber: '',
             sPassword: '',
