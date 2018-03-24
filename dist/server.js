@@ -236,7 +236,7 @@ async function updateStudentState(ctx) {
 
 
 //转发验证码和cookie
-router.get('/CheckCode.aspx', async (ctx, next) => {
+router.get('/login/CheckCode.aspx', async (ctx, next) => {
     await next();
     await loginGetCheckcode(ctx);
 })
