@@ -58,7 +58,8 @@ export default {
             sClass: '',
             sPhone: '',
             sSubject: '请选择方向',
-            thenote: ' '
+            thenote: ' ',
+            control: true,
         }
     },
     methods: {
@@ -66,31 +67,40 @@ export default {
             this.selecting = !this.selecting;
         },
         submitAjax() {
-            if(this.sName && this.sClass && this.sPhone && this.selected) {
-                this.thenote = '* 请稍后...'
-                let sData = {
-                    sNumber: this.getUserData.sNumber,
-                    sName: this.sName,
-                    sClass: this.sClass,
-                    sPhone: this.sPhone,
-                    sSubject: this.sSubject,
-                    status: '',
-                }
-                //sessionStorage
-                this.$axios({
-                    method: 'post',
-                    url: this.$route.path,
-                    data: sData,
-                }).then(result => {
-                    if(result.data === 'saveSuccess') {
-                        this.setUserData(sData);
-                        this.$router.replace('/success');
+            console.log(this.control)
+            if(this.control === true) {
+                if(this.sName && this.sClass && this.sPhone && this.selected) {
+                    this.control = false;
+                    console.log(this.control)
+                    this.thenote = '* 请稍后...'
+                    let sData = {
+                        sNumber: this.getUserData.sNumber,
+                        sName: this.sName,
+                        sClass: this.sClass,
+                        sPhone: this.sPhone,
+                        sSubject: this.sSubject,
+                        status: '',
                     }
-                }).catch(err => {
-                    console.log(err);
-                })
+                    //sessionStorage
+                    this.$axios({
+                        method: 'post',
+                        url: this.$route.path,
+                        data: sData,
+                    }).then(result => {
+                        if(result.data === 'saveSuccess') {
+                            this.setUserData(sData);
+                            this.$router.replace('/success');
+                        }
+                        this.control = true;
+                    }).catch(err => {
+                        this.control = true;
+                        console.log(err);
+                    })
+                } else {
+                    this.thenote = '* 请填写完整信息'
+                }
             } else {
-                this.thenote = '* 请填写完整信息'
+                this.thenote = '* 请不要重复提交'
             }
         },
         select(index) {
