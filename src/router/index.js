@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import login from '@/page/login'
 import error from '@/page/error'
 import signup from '@/page/signup'
+import signup_close from '@/page/signup_close'
 import success from '@/page/success'
 import message from '@/page/message'
 import admin_login from '@/page/admin_login'
@@ -54,6 +55,11 @@ export default new Router({
           next('/login')
         }
       },
+    },
+    {
+      path: '/signup_close',
+      name: 'closed',
+      component: signup_close,
     },
     {
       path: '/success',
