@@ -74,7 +74,7 @@ export default {
                     if(result.data === 'unregistered') {
                         //未注册时把学号写入Vuex
                         this.setUserData({sNumber: this.sNumber});
-                        this.$router.push('/signup');
+                        this.$router.push('/signup_close');
                     } else if(result.data.sNumber === this.sNumber) {
                         this.setUserData(result.data);
                         this.$router.push('/message');
