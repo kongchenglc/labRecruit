@@ -3,10 +3,11 @@
 > ThoughtCoding lab recruit website( vue + vue-reouter + vuex + axios + mongodb)
 
 ## Project Applied With
-Vue.js 2 + (Vue-router vuex axios)
-Node.js 
-Koa2
-Monk
+Vue.js 2 + (Vue-router vuex axios)  
+Node.js   
+Koa2  
+MongoDB
+Monk  
 
 ## Build Setup
 
